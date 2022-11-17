@@ -41,7 +41,7 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, Ownable {
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
     uint32 numWords = 10;
 
-    mapping(uint256 => uint256[]) s_requestIdToRandomWords;
+    mapping(uint256 => uint256[]) private s_requestIdToRandomWords;
 
     uint256 public s_requestId;
 
