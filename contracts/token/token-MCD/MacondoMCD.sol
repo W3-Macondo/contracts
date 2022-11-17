@@ -29,6 +29,7 @@ contract MacondoMCD is
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
+        _mint(msg.sender, 6000000000 * 10**decimals());
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
