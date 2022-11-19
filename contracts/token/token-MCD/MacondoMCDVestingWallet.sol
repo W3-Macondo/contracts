@@ -94,7 +94,10 @@ contract MacondoMCDVestingWallet is
         uint256 eachThreeYearReleaseTimes = 157680;
 
         //Calculate the number of shares to be released at the current time
-        uint256 currentReleaseTimes = (timestamp - _start) / (10 * 60);
+        uint256 currentReleaseTimes = vestAmountTokenCurrentReleaseTimes(
+            timestamp,
+            _start
+        );
 
         //Calculate the current release level 0,1,2,3,4
         uint256 currentReleaseLevel = currentReleaseTimes /
@@ -128,6 +131,13 @@ contract MacondoMCDVestingWallet is
         }
 
         return totalReleaseAmount;
+    }
+
+    function vestAmountTokenCurrentReleaseTimes(
+        uint64 timestamp,
+        uint256 _start
+    ) public pure returns (uint256) {
+        return (timestamp - _start) / (10 * 60);
     }
 
     /// @notice Calculate the number of tokens per share
