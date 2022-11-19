@@ -166,6 +166,16 @@ describe('MacondoMCDVestingWallet', () => {
         .then((vestingTokens: BigNumber) => {
           expect(vestingTokens).to.equal(ethers.utils.parseEther('1031279760'));
         });
+
+      await contract
+        .vestingTokens(
+          totalAllocated,
+          ethers.BigNumber.from(new Date('2025-01-01').getTime() / 1000),
+          ethers.BigNumber.from(new Date('2023-01-01').getTime() / 1000)
+        )
+        .then((vestingTokens: BigNumber) => {
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('2065384944'));
+        });
     });
   });
 });
