@@ -66,7 +66,7 @@ describe('MacondoMCDVestingWallet', () => {
         });
     });
 
-    it('vestingTokens', async () => {
+    it.skip('vestingTokens', async () => {
       const vestingTokens = await contract.vestingTokens(
         totalAllocated,
         ethers.BigNumber.from(new Date('2024-01-01').getTime() / 1000),

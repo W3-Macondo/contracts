@@ -160,11 +160,11 @@ contract MacondoMCDVestingWallet is
         uint256 totalAllocation,
         uint256 currentReleaseLevel
     ) public pure returns (uint256) {
-        uint256 tokenPerShare = vestedAmountTokenPerShare(totalAllocation);
-
         //Calculate the total number of tokens that can be released at the current release level
-        uint256 currentReleaseLevelAmount = tokenPerShare *
-            (2**(4 - currentReleaseLevel));
+        uint256 currentReleaseLevelAmount = releaseLevelAmount(
+            totalAllocation,
+            currentReleaseLevel
+        );
         //Release total times: 15*365*24*60/10=788400
         //3 years release times:3*365*24*60/10=157680
         uint256 eachThreeYearReleaseTimes = 157680;
@@ -175,5 +175,17 @@ contract MacondoMCDVestingWallet is
             .mul(1 ether);
 
         return currentReleaseAmountPerTime;
+    }
+
+    function releaseLevelAmount(
+        uint256 totalAllocation,
+        uint256 currentReleaseLevel
+    ) public pure returns (uint256) {
+        uint256 tokenPerShare = vestedAmountTokenPerShare(totalAllocation);
+
+        //Calculate the total number of tokens that can be released at the current release level
+        uint256 currentReleaseLevelAmount = tokenPerShare *
+            (2**(4 - currentReleaseLevel));
+        return currentReleaseLevelAmount;
     }
 }
