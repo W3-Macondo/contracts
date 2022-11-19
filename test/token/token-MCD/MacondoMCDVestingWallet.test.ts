@@ -14,7 +14,6 @@ describe('MacondoMCDVestingWallet', () => {
     );
     contract = await upgrades.deployProxy(MacondoMCDVestingWallet, [
       addr1.address,
-      ethers.BigNumber.from(new Date('2023-01-01').getTime() / 1000),
     ]);
     await contract.deployed();
   });
@@ -64,6 +63,38 @@ describe('MacondoMCDVestingWallet', () => {
         .then((vestingTokens: BigNumber) => {
           expect(vestingTokens).to.equal((365 * 24 * 60 * 60) / 10 / 60);
         });
+    });
+
+    it('verify releaseLevels', async () => {
+      await contract.releaseLevels(0).then((releaseLevel: any) => {
+        expect(releaseLevel.level).to.equal(0);
+        expect(releaseLevel.releaseTotalTimes).to.equal(52560 + 52704 + 52560);
+        expect(releaseLevel.releaseRatio).to.equal(16);
+      });
+
+      await contract.releaseLevels(1).then((releaseLevel: any) => {
+        expect(releaseLevel.level).to.equal(1);
+        expect(releaseLevel.releaseTotalTimes).to.equal(52560 + 52560 + 52704);
+        expect(releaseLevel.releaseRatio).to.equal(8);
+      });
+
+      await contract.releaseLevels(2).then((releaseLevel: any) => {
+        expect(releaseLevel.level).to.equal(2);
+        expect(releaseLevel.releaseTotalTimes).to.equal(52560 + 52560 + 52560);
+        expect(releaseLevel.releaseRatio).to.equal(4);
+      });
+
+      await contract.releaseLevels(3).then((releaseLevel: any) => {
+        expect(releaseLevel.level).to.equal(3);
+        expect(releaseLevel.releaseTotalTimes).to.equal(52704 + 52560 + 52560);
+        expect(releaseLevel.releaseRatio).to.equal(2);
+      });
+
+      await contract.releaseLevels(4).then((releaseLevel: any) => {
+        expect(releaseLevel.level).to.equal(4);
+        expect(releaseLevel.releaseTotalTimes).to.equal(52560 + 52704 + 52560);
+        expect(releaseLevel.releaseRatio).to.equal(1);
+      });
     });
 
     it.skip('vestingTokens', async () => {

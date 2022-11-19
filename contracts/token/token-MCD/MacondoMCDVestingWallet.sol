@@ -22,20 +22,32 @@ contract MacondoMCDVestingWallet is
     using SafeMathUpgradeable for uint256;
     using MathUpgradeable for uint256;
 
+    struct ReleaseLevel {
+        // The amount of tokens to be released at this level
+        uint256 level;
+        // The total times of tokens released at this level
+        uint256 releaseTotalTimes;
+        //release ratio coefficient 16, 8, 4, 2, 1
+        uint256 releaseRatio;
+    }
+
+    mapping(uint256 => ReleaseLevel) public releaseLevels;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(address beneficiaryAddress, uint64 startTimestamp)
-        public
-        initializer
-    {
+    function initialize(address beneficiaryAddress) public initializer {
         __Pausable_init();
         __AccessControl_init();
         __UUPSUpgradeable_init();
         //release cycle is 15 years.
-        __VestingWallet_init(beneficiaryAddress, startTimestamp, 15 * 365 days);
+        //startTimestamp is 2023-01-01 00:00:00, durationSeconds is 15 years.
+        //total 15 years,include 4 leap years, total 5479 days.
+        __VestingWallet_init(beneficiaryAddress, 1672502400, 5479 days);
+
+        _initializeReleaseLevels();
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
@@ -55,6 +67,49 @@ contract MacondoMCDVestingWallet is
         override
         onlyRole(UPGRADER_ROLE)
     {}
+
+    function _initializeReleaseLevels() internal {
+        //years: 2023,2024,2025
+        //release times: 52560,52704(1),52560
+        _addReleaseLevel(0, 52560 + 52704 + 52560, 16);
+
+        //years: 2026,2027,2028
+        //release times: 52560,52560,52704(1)
+        _addReleaseLevel(1, 52560 + 52560 + 52704, 8);
+
+        //years: 2029,2030,2031
+        //release times: 52560,52560,52560
+        _addReleaseLevel(2, 52560 + 52560 + 52560, 4);
+
+        //years: 2032,2033,2034
+        //release times: 52704(1),52560,52560
+        _addReleaseLevel(3, 52704 + 52560 + 52560, 2);
+
+        //years: 2035,2036,2037
+        //release times: 52560,52704(1),52560
+        _addReleaseLevel(4, 52560 + 52704 + 52560, 1);
+    }
+
+    function _addReleaseLevel(
+        uint256 level,
+        uint256 releaseTotalTimes,
+        uint256 releaseRatio
+    ) internal {
+        require(level >= 0, "level must be greater than 0");
+        require(
+            releaseTotalTimes > 0,
+            "MacondoMCDVestingWallet: releaseTotalTimes must be greater than 0"
+        );
+        require(
+            releaseRatio > 0,
+            "MacondoMCDVestingWallet: releaseRatio must be greater than 0"
+        );
+        releaseLevels[level] = ReleaseLevel(
+            level,
+            releaseTotalTimes,
+            releaseRatio
+        );
+    }
 
     /**
      * @dev Virtual implementation of the vesting formula. This returns the amount vested, as a function of time, for
