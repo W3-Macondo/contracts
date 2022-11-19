@@ -30,12 +30,12 @@ describe('MacondoMCDVestingWallet', () => {
       await contract
         .vestedAmountCurrentReleaseAmountPerTime(totalAllocated, 0)
         .then((vestingTokens: BigNumber) => {
-          expect(vestingTokens).to.equal(ethers.utils.parseEther('19639'));
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('19621'));
         });
       await contract
         .vestedAmountCurrentReleaseAmountPerTime(totalAllocated, 1)
         .then((vestingTokens: BigNumber) => {
-          expect(vestingTokens).to.equal(ethers.utils.parseEther('9819'));
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('9810'));
         });
       await contract
         .vestedAmountCurrentReleaseAmountPerTime(totalAllocated, 2)
@@ -45,12 +45,12 @@ describe('MacondoMCDVestingWallet', () => {
       await contract
         .vestedAmountCurrentReleaseAmountPerTime(totalAllocated, 3)
         .then((vestingTokens: BigNumber) => {
-          expect(vestingTokens).to.equal(ethers.utils.parseEther('2454'));
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('2452'));
         });
       await contract
         .vestedAmountCurrentReleaseAmountPerTime(totalAllocated, 4)
         .then((vestingTokens: BigNumber) => {
-          expect(vestingTokens).to.equal(ethers.utils.parseEther('1227'));
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('1226'));
         });
     });
 
@@ -95,6 +95,65 @@ describe('MacondoMCDVestingWallet', () => {
         expect(releaseLevel.releaseTotalTimes).to.equal(52560 + 52704 + 52560);
         expect(releaseLevel.releaseRatio).to.equal(1);
       });
+    });
+
+    it('calculateReleaseLevel', async () => {
+      await contract
+        .calculateReleaseLevel(0)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(0);
+        });
+      await contract
+        .calculateReleaseLevel(157823)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(0);
+        });
+      await contract
+        .calculateReleaseLevel(157824)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(1);
+        });
+      await contract
+        .calculateReleaseLevel(315648 - 1)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(1);
+        });
+
+      await contract
+        .calculateReleaseLevel(315648)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(2);
+        });
+      await contract
+        .calculateReleaseLevel(473328 - 1)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(2);
+        });
+
+      await contract
+        .calculateReleaseLevel(473328)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(3);
+        });
+      await contract
+        .calculateReleaseLevel(631152 - 1)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(3);
+        });
+
+      await contract
+        .calculateReleaseLevel(631152)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(4);
+        });
+      await contract
+        .calculateReleaseLevel(788976 - 1)
+        .then((releaseLevel: BigNumber) => {
+          expect(releaseLevel).to.equal(4);
+        });
+      await expect(contract.calculateReleaseLevel(788976)).to.be.revertedWith(
+        'currentReleaseTimes is error'
+      );
     });
 
     it.skip('vestingTokens', async () => {

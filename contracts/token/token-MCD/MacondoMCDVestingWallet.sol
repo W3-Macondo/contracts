@@ -140,13 +140,9 @@ contract MacondoMCDVestingWallet is
         uint64 timestamp,
         uint256 _start,
         uint256 _duration
-    ) public pure returns (uint256) {
+    ) public view returns (uint256) {
         //check the duration is 15 years
         require(_duration == 15 * 365 days, "duration is not 15 years");
-
-        //Release total times: 15*365*24*60/10=788400
-        //3 years release times:3*365*24*60/10=157680
-        uint256 eachThreeYearReleaseTimes = 157680;
 
         //Calculate the number of shares to be released at the current time
         uint256 currentReleaseTimes = vestAmountTokenCurrentReleaseTimes(
@@ -155,12 +151,15 @@ contract MacondoMCDVestingWallet is
         );
 
         //Calculate the current release level 0,1,2,3,4
-        uint256 currentReleaseLevel = currentReleaseTimes /
-            eachThreeYearReleaseTimes;
+        uint256 currentReleaseLevel = calculateReleaseLevel(
+            currentReleaseTimes
+        );
 
         //Calculate the total amount released so far
         uint256 totalReleaseAmount = 0;
         for (uint256 i = 0; i <= currentReleaseLevel; i++) {
+            uint256 eachThreeYearReleaseTimes = releaseLevels[i]
+                .releaseTotalTimes;
             //Calculate the number of tokens released each time at the current release level
             uint256 currentReleaseAmountPerTime = vestedAmountCurrentReleaseAmountPerTime(
                     totalAllocation,
@@ -214,15 +213,14 @@ contract MacondoMCDVestingWallet is
     function vestedAmountCurrentReleaseAmountPerTime(
         uint256 totalAllocation,
         uint256 currentReleaseLevel
-    ) public pure returns (uint256) {
+    ) public view returns (uint256) {
         //Calculate the total number of tokens that can be released at the current release level
         uint256 currentReleaseLevelAmount = releaseLevelAmount(
             totalAllocation,
             currentReleaseLevel
         );
-        //Release total times: 15*365*24*60/10=788400
-        //3 years release times:3*365*24*60/10=157680
-        uint256 eachThreeYearReleaseTimes = 157680;
+        uint256 eachThreeYearReleaseTimes = releaseLevels[currentReleaseLevel]
+            .releaseTotalTimes;
         //Calculate the number of tokens released each time at the current release level
         uint256 currentReleaseAmountPerTime = currentReleaseLevelAmount
             .div(eachThreeYearReleaseTimes)
@@ -230,6 +228,22 @@ contract MacondoMCDVestingWallet is
             .mul(1 ether);
 
         return currentReleaseAmountPerTime;
+    }
+
+    function calculateReleaseLevel(uint256 currentReleaseTimes)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 totalReleaseTimes = 0;
+        for (uint256 i = 0; i < 5; i++) {
+            totalReleaseTimes += releaseLevels[i].releaseTotalTimes;
+            if (currentReleaseTimes < totalReleaseTimes) {
+                return i;
+            }
+        }
+        require(false, "currentReleaseTimes is error");
+        return 5;
     }
 
     function releaseLevelAmount(
