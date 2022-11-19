@@ -57,7 +57,7 @@ contract PokerValidator is
         }
         uint256 j = 0;
         for (uint256 i = 0; i < count; i++) {
-            j = _getRandom(seed, i, count - i);
+            j = i + _getRandom(seed, i, count - i);
             (cards[i], cards[j]) = (cards[j], cards[i]);
         }
         return cards;
