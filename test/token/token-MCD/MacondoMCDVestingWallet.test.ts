@@ -156,15 +156,16 @@ describe('MacondoMCDVestingWallet', () => {
       );
     });
 
-    it.skip('vestingTokens', async () => {
-      const vestingTokens = await contract.vestingTokens(
-        totalAllocated,
-        ethers.BigNumber.from(new Date('2024-01-01').getTime() / 1000),
-        ethers.BigNumber.from(new Date('2023-01-01').getTime() / 1000),
-        secondsOf15Years
-      );
-      // seconds of 15 years
-      expect(vestingTokens).to.equal(ethers.utils.parseEther('1032258064'));
+    it('vestingTokens', async () => {
+      await contract
+        .vestingTokens(
+          totalAllocated,
+          ethers.BigNumber.from(new Date('2024-01-01').getTime() / 1000),
+          ethers.BigNumber.from(new Date('2023-01-01').getTime() / 1000)
+        )
+        .then((vestingTokens: BigNumber) => {
+          expect(vestingTokens).to.equal(ethers.utils.parseEther('1031279760'));
+        });
     });
   });
 });

@@ -127,8 +127,7 @@ contract MacondoMCDVestingWallet is
         } else if (timestamp > start() + duration()) {
             return totalAllocation;
         } else {
-            return
-                vestingTokens(totalAllocation, timestamp, start(), duration());
+            return vestingTokens(totalAllocation, timestamp, start());
         }
     }
 
@@ -138,12 +137,8 @@ contract MacondoMCDVestingWallet is
     function vestingTokens(
         uint256 totalAllocation,
         uint64 timestamp,
-        uint256 _start,
-        uint256 _duration
+        uint256 _start
     ) public view returns (uint256) {
-        //check the duration is 15 years
-        require(_duration == 15 * 365 days, "duration is not 15 years");
-
         //Calculate the number of shares to be released at the current time
         uint256 currentReleaseTimes = vestAmountTokenCurrentReleaseTimes(
             timestamp,
@@ -158,14 +153,14 @@ contract MacondoMCDVestingWallet is
         //Calculate the total amount released so far
         uint256 totalReleaseAmount = 0;
         for (uint256 i = 0; i <= currentReleaseLevel; i++) {
-            uint256 eachThreeYearReleaseTimes = releaseLevels[i]
-                .releaseTotalTimes;
             //Calculate the number of tokens released each time at the current release level
             uint256 currentReleaseAmountPerTime = vestedAmountCurrentReleaseAmountPerTime(
                     totalAllocation,
                     i
                 );
 
+            uint256 eachThreeYearReleaseTimes = releaseLevels[i]
+                .releaseTotalTimes;
             //Calculate the number of times the current release level has been released
             uint256 currentLevelReleaseTimes = 0;
             if (i == currentReleaseLevel) {
