@@ -155,6 +155,7 @@ contract MacondoMCDVestingWallet is
 
         //Calculate the total amount released so far
         uint256 totalReleaseAmount = 0;
+
         for (uint256 i = 0; i <= currentReleaseLevel; i++) {
             //Calculate the number of tokens released each time at the current release level
             uint256 currentReleaseAmountPerTime = vestedAmountCurrentReleaseAmountPerTime(
@@ -167,9 +168,9 @@ contract MacondoMCDVestingWallet is
             //Calculate the number of times the current release level has been released
             uint256 currentLevelReleaseTimes = 0;
             if (i == currentReleaseLevel) {
-                currentLevelReleaseTimes =
-                    currentReleaseTimes %
-                    eachThreeYearReleaseTimes;
+                currentLevelReleaseTimes = calculateCurrentLevelReleaseTimes(
+                    currentReleaseTimes
+                );
             } else {
                 currentLevelReleaseTimes = eachThreeYearReleaseTimes;
             }
@@ -246,6 +247,31 @@ contract MacondoMCDVestingWallet is
         }
         require(false, "currentReleaseTimes is error");
         return 5;
+    }
+
+    function calculateCurrentLevelReleaseTimes(uint256 currentReleaseTimes)
+        public
+        view
+        returns (uint256)
+    {
+        require(
+            currentReleaseTimes > 0,
+            "currentReleaseTimes must be greater than 0"
+        );
+        uint256 totalReleaseTimes = 0;
+        for (uint256 i = 0; i < 5; i++) {
+            uint256 currentLevelReleaseTotalTimes = releaseLevels[i]
+                .releaseTotalTimes;
+            if (
+                currentReleaseTimes <=
+                totalReleaseTimes + currentLevelReleaseTotalTimes
+            ) {
+                return currentReleaseTimes - totalReleaseTimes;
+            }
+            totalReleaseTimes += currentLevelReleaseTotalTimes;
+        }
+        require(false, "currentReleaseTimes is error");
+        return 0;
     }
 
     function releaseLevelAmount(

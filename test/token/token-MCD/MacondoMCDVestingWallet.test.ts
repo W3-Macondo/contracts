@@ -6,6 +6,7 @@ describe('MacondoMCDVestingWallet', () => {
   let contract: Contract;
   const totalAllocated = ethers.utils.parseEther('6000000000');
   const secondsOf15Years = 15 * 365 * 24 * 60 * 60;
+  const yearStart = new Date('2023-01-01 00:00:00').getTime() / 1000;
   beforeEach(async () => {
     const [deployer, addr1] = await ethers.getSigners();
 
@@ -157,6 +158,19 @@ describe('MacondoMCDVestingWallet', () => {
       ).to.be.revertedWith('currentReleaseTimes is error');
     });
 
+    it('calculateCurrentLevelReleaseTimes', async () => {
+      await contract
+        .calculateCurrentLevelReleaseTimes(1)
+        .then((currentLevelReleaseTimes: BigNumber) => {
+          expect(currentLevelReleaseTimes).to.equal(1);
+        });
+      await contract
+        .calculateCurrentLevelReleaseTimes(315648 + 7890)
+        .then((currentLevelReleaseTimes: BigNumber) => {
+          expect(currentLevelReleaseTimes).to.equal(7890);
+        });
+    });
+
     it('vestingTokens by years', async () => {
       const start = new Date('2023-01-01').getTime() / 1000;
 
@@ -192,9 +206,7 @@ describe('MacondoMCDVestingWallet', () => {
       }
     });
 
-    it.only('vestingTokens by years special', async () => {
-      const start = new Date('2023-01-01 00:00:00').getTime() / 1000;
-
+    it('vestingTokens by years special', async () => {
       const yearsVestings: Map<
         number,
         {
@@ -222,7 +234,7 @@ describe('MacondoMCDVestingWallet', () => {
         const yearEnd = new Date(`${year}-12-31 23:59:59`).getTime() / 1000;
         // check releaseTimes
         await contract
-          .vestAmountTokenCurrentReleaseTimes(yearEnd, start)
+          .vestAmountTokenCurrentReleaseTimes(yearEnd, yearStart)
           .then((vestingTokens: BigNumber) => {
             expect(vestingTokens).to.equal(vesting.releaseTimes);
           });
@@ -233,10 +245,21 @@ describe('MacondoMCDVestingWallet', () => {
           .then((releaseLevel: BigNumber) => {
             expect(releaseLevel).to.equal(vesting.releaseLevel);
           });
+        // check releaseAmountPerTime
+        await contract
+          .vestedAmountCurrentReleaseAmountPerTime(
+            totalAllocated,
+            vesting.releaseLevel
+          )
+          .then((vestingTokens: BigNumber) => {
+            expect(vestingTokens).to.equal(
+              ethers.utils.parseEther(vesting.releaseAmountPerTime)
+            );
+          });
 
         // check vestingTokens
         await contract
-          .vestingTokens(totalAllocated, yearEnd, start)
+          .vestingTokens(totalAllocated, yearEnd, yearStart)
           .then((vestingTokens: BigNumber) => {
             expect(vestingTokens).to.equal(
               ethers.utils.parseEther(vesting.vestingTokens)
