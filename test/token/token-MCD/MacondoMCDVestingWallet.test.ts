@@ -279,4 +279,87 @@ describe('MacondoMCDVestingWallet', () => {
       }
     });
   });
+
+  describe.only('MacondoMCDVestingWallet releaseToken', () => {
+    let tokenContract: Contract;
+    beforeEach(async () => {
+      const [owner, addr1] = await ethers.getSigners();
+      const TokenContract = await ethers.getContractFactory('MacondoMCD');
+      tokenContract = await upgrades.deployProxy(TokenContract);
+      await tokenContract.deployed();
+
+      await tokenContract
+        .connect(owner)
+        .transfer(contract.address, totalAllocated);
+    });
+
+    it('releaseToken', async () => {
+      // //change block time 2022-01-01 00:00:00
+      // await ethers.provider.send('evm_setNextBlockTimestamp', [1640966400]);
+      // await ethers.provider.send('evm_mine', []);
+      const [owner, addr1] = await ethers.getSigners();
+
+      await contract['releasable(address)'](tokenContract.address).then(
+        (amount: BigNumber) => {
+          expect(amount).to.equal(0);
+        }
+      );
+
+      await expect(contract['release(address)'](tokenContract.address))
+        .emit(contract, 'ERC20Released')
+        .withArgs(tokenContract.address, 0);
+    });
+
+    it('releaseToken 1 times', async () => {
+      //change block time 2023-01-01 00:00:00
+      await ethers.provider.send('evm_setNextBlockTimestamp', [1672502400]);
+      await ethers.provider.send('evm_mine', []);
+
+      await contract['releasable(address)'](tokenContract.address).then(
+        (amount: BigNumber) => {
+          expect(amount).to.equal(ethers.utils.parseEther('19621'));
+        }
+      );
+      await expect(contract['release(address)'](tokenContract.address))
+        .emit(contract, 'ERC20Released')
+        .withArgs(tokenContract.address, ethers.utils.parseEther('19621'));
+
+      await contract['releasable(address)'](tokenContract.address).then(
+        (amount: BigNumber) => {
+          expect(amount).to.equal(0);
+        }
+      );
+
+      await expect(contract['release(address)'](tokenContract.address))
+        .emit(contract, 'ERC20Released')
+        .withArgs(tokenContract.address, 0);
+    });
+
+    it('releaseToken 2 times', async () => {
+      //change block time 2023-01-01 00:00:00
+      await ethers.provider.send('evm_setNextBlockTimestamp', [
+        1672502400 + 10 * 60,
+      ]);
+      await ethers.provider.send('evm_mine', []);
+
+      await contract['releasable(address)'](tokenContract.address).then(
+        (amount: BigNumber) => {
+          expect(amount).to.equal(ethers.utils.parseEther('39242'));
+        }
+      );
+      await expect(contract['release(address)'](tokenContract.address))
+        .emit(contract, 'ERC20Released')
+        .withArgs(tokenContract.address, ethers.utils.parseEther('39242'));
+
+      await contract['releasable(address)'](tokenContract.address).then(
+        (amount: BigNumber) => {
+          expect(amount).to.equal(0);
+        }
+      );
+
+      await expect(contract['release(address)'](tokenContract.address))
+        .emit(contract, 'ERC20Released')
+        .withArgs(tokenContract.address, 0);
+    });
+  });
 });
