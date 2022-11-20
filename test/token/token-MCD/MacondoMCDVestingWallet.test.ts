@@ -100,8 +100,11 @@ describe('MacondoMCDVestingWallet', () => {
     });
 
     it('calculateReleaseLevel', async () => {
+      await expect(contract.calculateReleaseLevel(0)).to.be.revertedWith(
+        'currentReleaseTimes must be greater than 0'
+      );
       await contract
-        .calculateReleaseLevel(0)
+        .calculateReleaseLevel(0 + 1)
         .then((releaseLevel: BigNumber) => {
           expect(releaseLevel).to.equal(0);
         });
@@ -172,8 +175,6 @@ describe('MacondoMCDVestingWallet', () => {
     });
 
     it('vestingTokens by years', async () => {
-      const start = new Date('2023-01-01').getTime() / 1000;
-
       const yearsVestings: Map<number, string> = new Map();
       yearsVestings.set(2023, '1031279760');
       yearsVestings.set(2024, '2065384944');
@@ -192,14 +193,9 @@ describe('MacondoMCDVestingWallet', () => {
       yearsVestings.set(2037, '5999445936');
 
       for (const [year, vesting] of yearsVestings) {
+        const yearEnd = new Date(`${year}-12-31 23:59:59`).getTime() / 1000;
         await contract
-          .vestingTokens(
-            totalAllocated,
-            ethers.BigNumber.from(
-              new Date(`${year + 1}-01-01`).getTime() / 1000
-            ),
-            start
-          )
+          .vestingTokens(totalAllocated, yearEnd, yearStart)
           .then((vestingTokens: BigNumber) => {
             expect(vestingTokens).to.equal(ethers.utils.parseEther(vesting));
           });
@@ -216,19 +212,19 @@ describe('MacondoMCDVestingWallet', () => {
           releaseAmountPerTime: string;
         }
       > = new Map();
-      // yearsVestings.set(2023, {
-      //   releaseTimes: '52560',
-      //   vestingTokens: '1031279760',
-      //   releaseLevel: 0,
-      //   releaseAmountPerTime: '19621',
-      // });
-
-      yearsVestings.set(2028, {
-        releaseTimes: '315648',
-        vestingTokens: '4644918144',
-        releaseLevel: 1,
-        releaseAmountPerTime: '9810',
+      yearsVestings.set(2023, {
+        releaseTimes: '52560',
+        vestingTokens: '1031279760',
+        releaseLevel: 0,
+        releaseAmountPerTime: '19621',
       });
+
+      // yearsVestings.set(2028, {
+      //   releaseTimes: '315648',
+      //   vestingTokens: '4644918144',
+      //   releaseLevel: 1,
+      //   releaseAmountPerTime: '9810',
+      // });
 
       for (const [year, vesting] of yearsVestings) {
         const yearEnd = new Date(`${year}-12-31 23:59:59`).getTime() / 1000;
