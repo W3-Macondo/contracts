@@ -139,6 +139,7 @@ contract MacondoMCDVestingWallet is
         uint64 timestamp,
         uint256 _start
     ) public view returns (uint256) {
+        require(timestamp >= _start, "timestamp must be greater than start");
         //Calculate the number of shares to be released at the current time
         uint256 currentReleaseTimes = vestAmountTokenCurrentReleaseTimes(
             timestamp,

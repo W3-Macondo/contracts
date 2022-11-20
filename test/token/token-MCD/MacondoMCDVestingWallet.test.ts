@@ -263,5 +263,20 @@ describe('MacondoMCDVestingWallet', () => {
           });
       }
     });
+    it('vestingTokens by years error:boundary test', async () => {
+      const yearsVestings: Map<number, string> = new Map();
+      yearsVestings.set(2022, '1031279760');
+      yearsVestings.set(2038, '2065384944');
+
+      for (const [year, vesting] of yearsVestings) {
+        const yearEnd = new Date(`${year}-12-31 23:59:59`).getTime() / 1000;
+        await expect(contract.vestingTokens(totalAllocated, yearEnd, yearStart))
+          .to.be.reverted;
+        const yearEnd2 = new Date(`${year}-00-00 00:00:00`).getTime() / 1000;
+        await expect(
+          contract.vestingTokens(totalAllocated, yearEnd2, yearStart)
+        ).to.be.reverted;
+      }
+    });
   });
 });
