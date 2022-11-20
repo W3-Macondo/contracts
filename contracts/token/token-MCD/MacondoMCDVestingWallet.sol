@@ -144,6 +144,9 @@ contract MacondoMCDVestingWallet is
             timestamp,
             _start
         );
+        if (currentReleaseTimes == 0) {
+            return 0;
+        }
 
         //Calculate the current release level 0,1,2,3,4
         uint256 currentReleaseLevel = calculateReleaseLevel(
@@ -186,7 +189,7 @@ contract MacondoMCDVestingWallet is
         uint64 timestamp,
         uint256 _start
     ) public pure returns (uint256) {
-        return (timestamp - _start) / (10 * 60);
+        return (timestamp - _start) / (10 * 60) + 1;
     }
 
     /// @notice Calculate the number of tokens per share
@@ -230,10 +233,14 @@ contract MacondoMCDVestingWallet is
         view
         returns (uint256)
     {
+        require(
+            currentReleaseTimes > 0,
+            "currentReleaseTimes must be greater than 0"
+        );
         uint256 totalReleaseTimes = 0;
         for (uint256 i = 0; i < 5; i++) {
             totalReleaseTimes += releaseLevels[i].releaseTotalTimes;
-            if (currentReleaseTimes < totalReleaseTimes) {
+            if (currentReleaseTimes <= totalReleaseTimes) {
                 return i;
             }
         }
