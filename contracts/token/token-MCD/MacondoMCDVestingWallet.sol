@@ -42,8 +42,7 @@ contract MacondoMCDVestingWallet is
         __Pausable_init();
         __AccessControl_init();
         __UUPSUpgradeable_init();
-        //release cycle is 15 years.
-        //startTimestamp is 2023-01-01 00:00:00, durationSeconds is 15 years.
+        //startTimestamp is 2023-01-01 00:00:00(1672502400), durationSeconds is 15 years.
         //total 15 years,include 4 leap years, total 5479 days.
         __VestingWallet_init(beneficiaryAddress, 1672502400, 5479 days);
 
