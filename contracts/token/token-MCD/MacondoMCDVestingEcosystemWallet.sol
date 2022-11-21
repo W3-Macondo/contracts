@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "../../core/finance/VestingByTimeBlockWalletUpgradeable.sol";
 import "../../providers/datetime/DateTime.sol";
 
-contract MacondoMCDVestingTreasuryWallet is
+contract MacondoMCDVestingEcosystemWallet is
     Initializable,
     PausableUpgradeable,
     AccessControlUpgradeable,
@@ -57,4 +57,14 @@ contract MacondoMCDVestingTreasuryWallet is
         override
         onlyRole(UPGRADER_ROLE)
     {}
+
+    function calculateReleaseCount(uint256 _start, uint256 _end)
+        public
+        pure
+        virtual
+        override
+        returns (uint256)
+    {
+        return DateTime.diffMinutes(_start, _end) / 10;
+    }
 }

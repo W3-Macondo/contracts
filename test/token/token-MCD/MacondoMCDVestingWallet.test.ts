@@ -23,14 +23,14 @@ describe('MacondoMCDVestingTreasuryWallet', () => {
     await contract.deployed();
   });
   describe('MacondoMCDVestingWallet vestingTokens', () => {
-    it('calculateMonths', async () => {
+    it('calculateReleaseCount', async () => {
       await contract
-        .calculateMonths(yearStart, yearEnd)
+        .calculateReleaseCount(yearStart, yearEnd)
         .then((totalMonths: BigNumber) => {
           expect(totalMonths).to.equal(120);
         });
       await contract
-        .calculateMonths(
+        .calculateReleaseCount(
           yearStart,
           new Date('2024-01-01 00:00:00 GMT').getTime() / 1000
         )
@@ -39,7 +39,7 @@ describe('MacondoMCDVestingTreasuryWallet', () => {
         });
 
       await contract
-        .calculateMonths(yearStart, yearStart + 30 * 24 * 60 * 60)
+        .calculateReleaseCount(yearStart, yearStart + 30 * 24 * 60 * 60)
         .then((totalMonths: BigNumber) => {
           expect(totalMonths).to.equal(0);
         });

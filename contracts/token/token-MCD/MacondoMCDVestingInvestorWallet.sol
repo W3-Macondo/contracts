@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "../../core/finance/VestingByTimeBlockWalletUpgradeable.sol";
 import "../../providers/datetime/DateTime.sol";
 
-contract MacondoMCDVestingTreasuryWallet is
+contract MacondoMCDVestingInvestorWallet is
     Initializable,
     PausableUpgradeable,
     AccessControlUpgradeable,
