@@ -67,4 +67,22 @@ contract MacondoMCDVestingEcosystemWallet is
     {
         return DateTime.diffMinutes(_start, _end) / 10;
     }
+
+    /**
+     * @dev Release the native token (ether) that have already vested.
+     *
+     * Emits a {EtherReleased} event.
+     */
+    function release() public virtual override whenNotPaused {
+        super.release();
+    }
+
+    /**
+     * @dev Release the tokens that have already vested.
+     *
+     * Emits a {ERC20Released} event.
+     */
+    function release(address token) public virtual override whenNotPaused {
+        super.release(token);
+    }
 }
