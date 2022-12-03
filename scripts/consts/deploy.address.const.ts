@@ -1,4 +1,21 @@
-export const ContractDeployAddress = {
+import { hardhatArguments } from 'hardhat';
+
+interface ContractDeployAddressInterface {
+  MacondoBFB: string | null;
+  MacondoMCD: string | null;
+  MacondoUSDT: string | null;
+  MacondoUSDTFaucet: string | null;
+  MacondoTableNFT: string | null;
+  MacondoTableNFTMinterBlindBox: string | null;
+  MacondoPokerPass: string | null;
+  MacondoPokerPassMinterBlindBox: string | null;
+  AccountBurn: string | null;
+  PokerValidator: string | null;
+  TokenCollection: string | null;
+  RandomOracleConsumer: string | null;
+}
+
+const ContractDeployAddress_BscTestNet: ContractDeployAddressInterface = {
   MacondoBFB: '0x849Ac2eAF42C7239A1f807f250928Eac23376C63',
   MacondoMCD: '0xC3a787C2B1AB52e18bA5387a13c5B6551A89f006',
   MacondoUSDT: '0x97310efB7831A90d9C33e2ddC2E22dF6ef3e9dcA',
@@ -12,3 +29,34 @@ export const ContractDeployAddress = {
   TokenCollection: '0x8023cCfaF67a34628e6e3093B3557E6184782289',
   RandomOracleConsumer: '0x27e69a1acd722A0aA02F4bf611Ea797bFC4Ba3Ee',
 };
+
+const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
+  MacondoBFB: '0x84c40628121CBd6CB40Dd5B12349bCD3ba010D6f',
+  MacondoMCD: null,
+  MacondoUSDT: null,
+  MacondoUSDTFaucet: null,
+  MacondoTableNFT: null,
+  MacondoTableNFTMinterBlindBox: null,
+  MacondoPokerPass: null,
+  MacondoPokerPassMinterBlindBox: null,
+  AccountBurn: null,
+  PokerValidator: null,
+  TokenCollection: null,
+  RandomOracleConsumer: null,
+};
+let _ContractDeployAddress: ContractDeployAddressInterface =
+  ContractDeployAddress_BscTestNet;
+switch (hardhatArguments.network) {
+  case 'bsc_testnet':
+    _ContractDeployAddress = ContractDeployAddress_BscTestNet;
+    break;
+  case 'bsc_mainnet':
+    _ContractDeployAddress = ContractDeployAddress_BscMainNet;
+    break;
+  default:
+    _ContractDeployAddress = undefined as any;
+    break;
+}
+
+export const ContractDeployAddress: ContractDeployAddressInterface =
+  _ContractDeployAddress;
