@@ -29,6 +29,7 @@ async function showGrantRole() {
 }
 
 async function main() {
+  // console.log('contractAddress', ContractDeployAddress);
   await showGrantRole();
 }
 

@@ -6,7 +6,7 @@ import {
   deployUpgradeUpdate,
 } from '../../utils/deploy.util';
 
-export const contractAddress = ContractDeployAddress.MacondoBFB;
+export const contractAddress = ContractDeployAddress.MacondoBFB as string;
 
 async function main() {
   // We get the contract to deploy

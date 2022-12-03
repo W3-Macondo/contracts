@@ -11,6 +11,9 @@ const {
   PRIVATE_KEY,
   HARDHAT_BLOCKNUMBER,
   BSC_TESTNET_URL,
+  BSC_TESTNET_DEPLOYER_PRIVATE_KEY,
+  BSC_MAINNET_URL,
+  BSC_MAINNET_DEPLOYER_PRIVATE_KEY,
 } = process.env;
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -35,7 +38,11 @@ module.exports = {
       url: BSC_TESTNET_URL,
       chainId: 97,
       gasPrice: 20000000000,
-      accounts: [`0x${PRIVATE_KEY}`],
+      accounts: [`0x${BSC_TESTNET_DEPLOYER_PRIVATE_KEY}`],
+    },
+    bsc_mainnet: {
+      url: BSC_MAINNET_URL,
+      accounts: [`0x${BSC_MAINNET_DEPLOYER_PRIVATE_KEY}`],
     },
     bsc_local: {
       url: 'http://127.0.0.1:8545',
@@ -52,7 +59,7 @@ module.exports = {
     timeout: 2 * 60 * 1000,
   },
   abiExporter: {
-    except: ['contracts/core', 'contracts/providers'],
+    except: ['contracts/tests', 'contracts/core', 'contracts/providers'],
   },
   defender: {
     apiKey: process.env.CONTRACT_DEPLOYER_DEFENDER_TEAM_API_KEY,
