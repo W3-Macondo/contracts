@@ -310,7 +310,7 @@ describe('MacondoTableNFTMinterBlindBox', () => {
     });
   });
 
-  describe('MacondoTableNFTMinterBlindBox:set Property', () => {
+  describe.only('MacondoTableNFTMinterBlindBox:set Property', () => {
     it('success:setSaleConfig', async () => {
       const startTimestamp = Math.floor(new Date().getTime() / 1000) - 20 * 60;
       const endTimestamp = Math.floor(new Date().getTime() / 1000) + 20 * 60;
@@ -372,6 +372,15 @@ describe('MacondoTableNFTMinterBlindBox', () => {
     it('success:setTotalSupply', async () => {
       await contract.setTotalSupply(100);
       expect(await contract.totalSupply()).to.equal(100);
+    });
+
+    it('success:addTotalSupply', async () => {
+      await contract.setTotalSupply(100);
+      expect(await contract.totalSupply()).to.equal(100);
+      await contract.addTotalSupply(100);
+      expect(await contract.totalSupply()).to.equal(200);
+      await contract.addTotalSupply(100);
+      expect(await contract.totalSupply()).to.equal(300);
     });
   });
 });

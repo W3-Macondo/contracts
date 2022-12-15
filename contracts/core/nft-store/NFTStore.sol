@@ -194,6 +194,13 @@ contract NFTStore is Initializable, ContextUpgradeable {
         totalSupply = _totalSupply;
     }
 
+    function _addTotalSupply(uint256 amount) internal {
+        if (totalSupply == 0) {
+            revert(string(abi.encodePacked("total supply not set")));
+        }
+        totalSupply = totalSupply.add(amount);
+    }
+
     modifier inSalePeriod() {
         if (block.timestamp < defaultConfig.startTimestamp) {
             revert(string(abi.encodePacked("sale not start")));
