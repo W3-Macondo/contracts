@@ -35,7 +35,7 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   MacondoMCD: null,
   MacondoUSDT: null,
   MacondoUSDTFaucet: null,
-  MacondoTableNFT: null,
+  MacondoTableNFT: '0xf30957ECe0Ace9D2279d3365416af0e48Bd341B7',
   MacondoTableNFTMinterBlindBox: null,
   MacondoPokerPass: null,
   MacondoPokerPassMinterBlindBox: null,
