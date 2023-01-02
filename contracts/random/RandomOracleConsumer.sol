@@ -81,7 +81,6 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, Ownable {
     function getRandomWords(uint256 requestId)
         public
         view
-        onlyOwner
         returns (uint256[] memory)
     {
         return s_requestIdToRandomWords[requestId];
