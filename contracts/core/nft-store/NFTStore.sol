@@ -86,6 +86,10 @@ contract NFTStore is Initializable, ContextUpgradeable {
         if (msg.value < price) {
             revert(string(abi.encodePacked("not enough money")));
         }
+        //check to address
+        if (to == address(0)) {
+            revert(string(abi.encodePacked("to address cannot be 0")));
+        }
         //check sold list
         if (soldList[tokenId] != address(0)) {
             revert(string(abi.encodePacked("token already sold")));
