@@ -83,8 +83,18 @@ contract NFTStore is Initializable, ContextUpgradeable {
         if (price <= 1) {
             revert(string(abi.encodePacked("price must be greater than 1")));
         }
-        if (msg.value < price) {
-            revert(string(abi.encodePacked("not enough money")));
+        // check money equal price
+        if (msg.value != price) {
+            revert(
+                string(
+                    abi.encodePacked(
+                        "msg.value must be equal to price,",
+                        StringsUpgradeable.toString(msg.value),
+                        "!=",
+                        StringsUpgradeable.toString(price)
+                    )
+                )
+            );
         }
         //check to address
         if (to == address(0)) {
@@ -106,13 +116,6 @@ contract NFTStore is Initializable, ContextUpgradeable {
 
         //mint token
         tokenContract.safeMint(to, tokenId, uri);
-        //refund
-        if (msg.value > price) {
-            AddressUpgradeable.sendValue(
-                payable(msg.sender),
-                msg.value.sub(price)
-            );
-        }
 
         _saleAfter(to, tokenId, uri, price);
         //emit event

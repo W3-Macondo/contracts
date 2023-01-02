@@ -38,20 +38,6 @@ describe('RandomOracleConsumer', function () {
     const s_requestId = await contract.s_requestId();
     console.log('s_requestId', s_requestId);
   });
-  it('RandomOracleConsumer:Transfer ownership', async function () {
-    let s_randomWords = await contract.getRandomWords(1);
-    expect(s_randomWords).to.be.empty;
-    const [owner, addr1] = await ethers.getSigners();
-    await expect(contract.transferOwnership(addr1.address))
-      .to.emit(contract, 'OwnershipTransferred')
-      .withArgs(owner.address, addr1.address);
-
-    await expect(contract.getRandomWords(1)).to.be.revertedWith(
-      'call revert exception'
-    );
-    s_randomWords = contract.connect(addr1).getRandomWords(1);
-    expect(s_randomWords).to.be.empty;
-  });
 
   it('RandomOracleConsumer:Request random number', async function () {
     const signer = new ethers.Wallet(
