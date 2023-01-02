@@ -48,6 +48,8 @@ contract MacondoPokerPassMinterBlindBox is
         _grantRole(SALE_MANAGE_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
 
+        //check withdraw address
+        require(_withdrawAddress != address(0), "withdraw address is zero");
         withdrawAddress = _withdrawAddress;
     }
 
@@ -141,6 +143,7 @@ contract MacondoPokerPassMinterBlindBox is
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
+        require(_withdrawAddress != address(0), "withdraw address is zero");
         withdrawAddress = _withdrawAddress;
     }
 
