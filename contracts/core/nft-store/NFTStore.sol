@@ -163,9 +163,9 @@ contract NFTStore is Initializable, ContextUpgradeable {
     }
 
     function _setSaleConfigPrice(uint256 _salePrice) internal {
-        //price must not be 0
-        if (_salePrice == 0) {
-            revert(string(abi.encodePacked("price must not be 0")));
+        //price must be greater than 1
+        if (_salePrice <= 1) {
+            revert(string(abi.encodePacked("price must be greater than 1")));
         }
         defaultConfig.price = _salePrice;
     }
