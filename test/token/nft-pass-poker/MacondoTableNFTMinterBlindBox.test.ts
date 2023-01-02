@@ -161,7 +161,7 @@ describe('MacondoPokerPassMinterBlindBox', () => {
 
       await expect(
         contract.sale({ value: ethers.utils.parseEther('1') })
-      ).to.be.revertedWith('not enough money');
+      ).to.be.revertedWith('msg.value must be equal to price,');
     });
   });
 });

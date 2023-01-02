@@ -306,11 +306,11 @@ describe('MacondoTableNFTMinterBlindBox', () => {
 
       await expect(
         contract.sale({ value: ethers.utils.parseEther('1') })
-      ).to.be.revertedWith('not enough money');
+      ).to.be.revertedWith('msg.value must be equal to price,');
     });
   });
 
-  describe.only('MacondoTableNFTMinterBlindBox:set Property', () => {
+  describe('MacondoTableNFTMinterBlindBox:set Property', () => {
     it('success:setSaleConfig', async () => {
       const startTimestamp = Math.floor(new Date().getTime() / 1000) - 20 * 60;
       const endTimestamp = Math.floor(new Date().getTime() / 1000) + 20 * 60;
