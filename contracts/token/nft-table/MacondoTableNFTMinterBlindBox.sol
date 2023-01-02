@@ -115,6 +115,13 @@ contract MacondoTableNFTMinterBlindBox is
         _setTotalSupply(_totalSupply);
     }
 
+    function addTotalSupply(uint256 amount)
+        external
+        onlyRole(SALE_MANAGE_ROLE)
+    {
+        _addTotalSupply(amount);
+    }
+
     function resetSoldCount() external onlyRole(SALE_MANAGE_ROLE) {
         _setSoldCount(0);
     }

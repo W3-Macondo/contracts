@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgra
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 /**
- * @title ERC20 Token with control over token transfers
+ * @title BNB\ERC20\ERC721 Token with control over token transfers
  */
 contract TokenCollection is
     Initializable,
