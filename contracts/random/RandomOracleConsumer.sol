@@ -50,6 +50,11 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, Ownable {
         address m_vrfCoordinator,
         bytes32 m_keyHash
     ) VRFConsumerBaseV2(m_vrfCoordinator) {
+        //check m_vrfCoordinator is not zero address
+        require(
+            m_vrfCoordinator != address(0),
+            "vrfCoordinator is zero address"
+        );
         COORDINATOR = VRFCoordinatorV2Interface(m_vrfCoordinator);
         vrfCoordinator = m_vrfCoordinator;
         s_subscriptionId = subscriptionId;
