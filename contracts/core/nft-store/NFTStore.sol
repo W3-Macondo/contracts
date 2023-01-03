@@ -149,13 +149,13 @@ contract NFTStore is Initializable, ContextUpgradeable {
         uint256 _saleEndTime
     ) internal {
         //start time must be less than end time
-        if (_saleStartTime > _saleEndTime) {
+        if (_saleStartTime >= _saleEndTime) {
             revert(
                 string(
                     abi.encodePacked(
                         "start time must be less than end time,",
                         StringsUpgradeable.toString(_saleStartTime),
-                        ">",
+                        ">=",
                         StringsUpgradeable.toString(_saleEndTime)
                     )
                 )
