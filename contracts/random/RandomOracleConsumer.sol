@@ -7,8 +7,9 @@ import "hardhat/console.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract RandomOracleConsumer is VRFConsumerBaseV2, Ownable {
+contract RandomOracleConsumer is VRFConsumerBaseV2, ReentrancyGuard, Ownable {
     VRFCoordinatorV2Interface COORDINATOR;
 
     // Random number request completed
@@ -62,7 +63,7 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, Ownable {
     }
 
     // Assumes the subscription is funded sufficiently.
-    function requestRandomWords() external onlyOwner {
+    function requestRandomWords() external nonReentrant onlyOwner {
         // Will revert if subscription is not set and funded.
         uint256 requestId = COORDINATOR.requestRandomWords(
             keyHash,
