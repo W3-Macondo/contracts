@@ -20,7 +20,7 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, ReentrancyGuard, Ownable {
 
     // Rinkeby coordinator. For other networks,
     // see https://docs.chain.link/docs/vrf-contracts/#configurations
-    address immutable vrfCoordinator;
+    address immutable s_vrfCoordinator;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
     // For a list of available gas lanes on each network,
@@ -57,7 +57,7 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, ReentrancyGuard, Ownable {
             "vrfCoordinator is zero address"
         );
         COORDINATOR = VRFCoordinatorV2Interface(m_vrfCoordinator);
-        vrfCoordinator = m_vrfCoordinator;
+        s_vrfCoordinator = m_vrfCoordinator;
         s_subscriptionId = subscriptionId;
         keyHash = m_keyHash;
     }
