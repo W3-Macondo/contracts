@@ -8,6 +8,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 /**
  * @title BNB\ERC20\ERC721 Token with control over token transfers
@@ -16,6 +17,7 @@ contract TokenCollection is
     Initializable,
     AccessControlUpgradeable,
     ERC721HolderUpgradeable,
+    ReentrancyGuardUpgradeable,
     PausableUpgradeable
 {
     event TokenReceived(address from, uint256 amount);
@@ -44,6 +46,7 @@ contract TokenCollection is
     function initialize() public initializer {
         __AccessControl_init();
         __ERC721Holder_init();
+        __ReentrancyGuard_init();
 
         __Pausable_init();
 
@@ -66,6 +69,7 @@ contract TokenCollection is
     function withdraw(address payable to, uint256 amount)
         public
         whenNotPaused
+        nonReentrant
         onlyRole(WITHDRAW)
     {
         AddressUpgradeable.sendValue(to, amount);
@@ -76,7 +80,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public whenNotPaused onlyRole(WITHDRAW_ERC20) {
+    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC20) {
         SafeERC20Upgradeable.safeTransfer(token, to, value);
         emit ERC20Withdraw(token, to, value);
     }
@@ -85,7 +89,7 @@ contract TokenCollection is
         IERC721Upgradeable token,
         address to,
         uint256 tokenId
-    ) public whenNotPaused onlyRole(WITHDRAW_ERC721) {
+    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC721) {
         token.safeTransferFrom(address(this), to, tokenId);
         emit ERC721Withdraw(token, to, tokenId);
     }
