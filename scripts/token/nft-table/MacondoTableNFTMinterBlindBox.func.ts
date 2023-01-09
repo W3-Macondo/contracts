@@ -7,7 +7,7 @@ const { CONTRACT_DEFAULT_CALLER_ADDRESS } = process.env;
 async function getContract() {
   const contract = await ethers.getContractAt(
     'MacondoTableNFTMinterBlindBox',
-    ContractDeployAddress.MacondoTableNFTMinterBlindBox
+    ContractDeployAddress.MacondoTableNFTMinterBlindBox as string
   );
   const [owner] = await ethers.getSigners();
 
