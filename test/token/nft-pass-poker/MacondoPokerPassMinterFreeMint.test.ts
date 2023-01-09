@@ -85,6 +85,9 @@ describe('MacondoPokerPassMinterFreeMint', () => {
 
       const nonce1: BigNumber = await contract.getNonce();
       expect(nonce1.toNumber()).to.equal(1);
+
+      expect(await contract.soldCountByAddress(owner.address)).to.equal(1);
+
       //check nft token
       expect(await macondoPokerPass.ownerOf(200000)).to.equal(owner.address);
       expect(await macondoPokerPass.tokenURI(200000)).to.equal(
