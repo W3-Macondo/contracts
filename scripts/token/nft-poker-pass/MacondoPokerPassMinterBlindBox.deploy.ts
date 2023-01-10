@@ -5,8 +5,6 @@ import {
   deployUpgradeUpdate,
 } from '../../utils/deploy.util';
 
-// import { deployedContractAddress as NFTDeployedContractAddress } from './MacondoPokerPass.deploy';
-
 const { CONTRACT_DEFAULT_CALLER_ADDRESS } = process.env;
 // Deployed contract address
 // export const deployedContractAddress = null;
