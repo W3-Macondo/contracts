@@ -24,6 +24,7 @@ contract MacondoPokerPassMinterFreeMint is
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant SALE_MANAGE_ROLE = keccak256("SALE_MANAGE_ROLE");
+    bytes32 public constant SALE_SIGNER_ROLE = keccak256("SALE_SIGNER_ROLE");
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private _nonce;
@@ -51,6 +52,7 @@ contract MacondoPokerPassMinterFreeMint is
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(SALE_MANAGE_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
+        _grantRole(SALE_SIGNER_ROLE, msg.sender);
 
         //check withdraw address
         require(_withdrawAddress != address(0), "withdraw address is zero");
@@ -185,7 +187,7 @@ contract MacondoPokerPassMinterFreeMint is
             signature
         );
 
-        _checkRole(SALE_MANAGE_ROLE, signer);
+        _checkRole(SALE_SIGNER_ROLE, signer);
 
         _saleFreeWithIncreaseTokenId(to);
     }
