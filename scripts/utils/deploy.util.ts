@@ -1,6 +1,7 @@
 import { DeployProxyOptions } from '@openzeppelin/hardhat-upgrades/dist/utils';
 import { Contract, ContractFactory } from 'ethers';
 import hre, { defender, ethers, upgrades } from 'hardhat';
+import { getRuntimeConfig } from './config.util';
 
 /**
  *
@@ -106,7 +107,14 @@ export async function deployUpgradeUpdateWithProposal(
   console.log('[deploy contract]:deploy [%s] upgrade ...', contractName);
   const Contract = await getContractFactory(contractName);
   console.log('Preparing proposal...');
-  const proposal = await defender.proposeUpgrade(contractAddress, Contract);
+  const runtimeConfig = getRuntimeConfig();
+  console.log(
+    'Upgrade proposal with multisig at:',
+    runtimeConfig.upgradeDefenderMultiSigAddress
+  );
+  const proposal = await defender.proposeUpgrade(contractAddress, Contract, {
+    multisig: runtimeConfig.upgradeDefenderMultiSigAddress,
+  });
   console.log('Upgrade proposal created at:', proposal.url);
 }
 
