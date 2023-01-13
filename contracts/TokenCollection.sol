@@ -9,6 +9,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title BNB\ERC20\ERC721 Token with control over token transfers
@@ -18,7 +19,8 @@ contract TokenCollection is
     AccessControlUpgradeable,
     ERC721HolderUpgradeable,
     ReentrancyGuardUpgradeable,
-    PausableUpgradeable
+    PausableUpgradeable,
+    UUPSUpgradeable
 {
     event TokenReceived(address from, uint256 amount);
     event Withdraw(address to, uint256 amount);
@@ -37,6 +39,7 @@ contract TokenCollection is
     bytes32 public constant WITHDRAW_ERC20 = keccak256("WITHDRAW_ERC20");
     bytes32 public constant WITHDRAW_ERC721 = keccak256("WITHDRAW_ERC721");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -47,12 +50,19 @@ contract TokenCollection is
         __AccessControl_init();
         __ERC721Holder_init();
         __ReentrancyGuard_init();
-
+        __UUPSUpgradeable_init();
         __Pausable_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
+        _grantRole(UPGRADER_ROLE, msg.sender);
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyRole(UPGRADER_ROLE)
+    {}
 
     receive() external payable virtual {
         emit TokenReceived(_msgSender(), msg.value);
