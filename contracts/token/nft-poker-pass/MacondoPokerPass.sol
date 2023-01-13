@@ -25,6 +25,8 @@ contract MacondoPokerPass is
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
+    string public tokenBaseURI;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -42,6 +44,10 @@ contract MacondoPokerPass is
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
+
+        _setTokenBaseURI(
+            "https://macondo-nft-storage.s3.us-west-1.amazonaws.com/"
+        );
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -89,9 +95,19 @@ contract MacondoPokerPass is
         super._burn(tokenId);
     }
 
-    function _baseURI() internal pure override returns (string memory) {
-        return
-            "https://macondo-nft-storage.s3.us-west-1.amazonaws.com/meta/poker-pass-";
+    function _baseURI() internal view override returns (string memory) {
+        return string(abi.encodePacked(tokenBaseURI, "meta/poker-pass-"));
+    }
+
+    function setTokenBaseURI(string memory baseURI)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        _setTokenBaseURI(baseURI);
+    }
+
+    function _setTokenBaseURI(string memory uri) internal {
+        tokenBaseURI = uri;
     }
 
     function tokenURI(uint256 tokenId)
