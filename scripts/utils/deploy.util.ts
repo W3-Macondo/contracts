@@ -1,5 +1,5 @@
 import { DeployProxyOptions } from '@openzeppelin/hardhat-upgrades/dist/utils';
-import { Contract, ContractFactory } from 'ethers';
+import { Contract, ContractFactory, ContractTransaction } from 'ethers';
 import hre, { defender, ethers, upgrades } from 'hardhat';
 import { getRuntimeConfig } from './config.util';
 
@@ -123,3 +123,39 @@ export async function getContractFactory(
 ): Promise<ContractFactory> {
   return hre.ethers.getContractFactory(contractName);
 }
+
+async function deployGrantRoles(
+  contract: Contract,
+  roles: {
+    roleId: string;
+    roleName: string;
+  }[],
+  grantAddress: string
+) {
+  for (const role of roles) {
+    await contract
+      .grantRole(role.roleId, grantAddress)
+      .then((tx: ContractTransaction) => tx.wait());
+    console.log(`grant ${role.roleName} role to: ${grantAddress}`);
+  }
+}
+
+async function deployRevokeRoles(
+  contract: Contract,
+  roles: {
+    roleId: string;
+    roleName: string;
+  }[],
+  revokeAddress: string
+) {
+  for (const role of roles) {
+    await contract
+      .revokeRole(role.roleId, revokeAddress)
+      .then((tx: ContractTransaction) => tx.wait());
+    console.log(`revoke ${role.roleName} role from: ${revokeAddress}`);
+  }
+}
+export const deployUtil = {
+  grantRoles: deployGrantRoles,
+  revokeRoles: deployRevokeRoles,
+};
