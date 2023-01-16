@@ -4,7 +4,7 @@ import { ContractDeployAddress } from '../../consts/deploy.address.const';
 import { getRuntimeConfig } from '../../utils/config.util';
 import {
   deployUpgradeProxy,
-  deployUpgradeUpdate,
+  deployUpgradeUpdateWithProposal,
   deployUtil,
 } from '../../utils/deploy.util';
 const {
@@ -17,7 +17,7 @@ async function main() {
 
   const DeployContractName = 'AccountBurn';
   if (contractAddress) {
-    const contract = await deployUpgradeUpdate(
+    const contract = await deployUpgradeUpdateWithProposal(
       DeployContractName,
       contractAddress
     );
