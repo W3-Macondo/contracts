@@ -12,8 +12,10 @@
   - [bscscan](https://bscscan.com/address/0xD0c7C4E2718db68aF8d96C508a494784e887D88a)
 - `MacondoPokerPass`:`0xa71625E8E7E4c5aDB97143eec25a6480854C4007`
   - [bscscan](https://bscscan.com/address/0xa71625E8E7E4c5aDB97143eec25a6480854C4007)
-- `MacondoPokerPass`:`0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52`
+- `MacondoPokerPassMinterBlindBox`:`0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52`
   - [bscscan](https://bscscan.com/address/0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52)
+- `MacondoPokerPassMinterFreeMint`:`0x350B1fe73BB888Ff8A169D6c33DD8d9cb9044197`
+  - [bscscan](https://bscscan.com/address/0x350B1fe73BB888Ff8A169D6c33DD8d9cb9044197)
 - `AccountBurn`:`0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc`
   - [bscscan](https://bscscan.com/address/0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc)
 - `PokerValidator`:`0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334`
