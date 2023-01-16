@@ -43,7 +43,7 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   MacondoPokerPassMinterBlindBox: null,
   MacondoPokerPassMinterFreeMint: null,
   AccountBurn: null,
-  PokerValidator: null,
+  PokerValidator: '0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334',
   TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
   RandomOracleConsumer: null,
 };
