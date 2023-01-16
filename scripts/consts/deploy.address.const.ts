@@ -40,7 +40,7 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   MacondoTableNFT: '0xf30957ECe0Ace9D2279d3365416af0e48Bd341B7',
   MacondoTableNFTMinterBlindBox: '0xD0c7C4E2718db68aF8d96C508a494784e887D88a',
   MacondoPokerPass: '0xa71625E8E7E4c5aDB97143eec25a6480854C4007',
-  MacondoPokerPassMinterBlindBox: null,
+  MacondoPokerPassMinterBlindBox: '0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52',
   MacondoPokerPassMinterFreeMint: null,
   AccountBurn: '0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc',
   PokerValidator: '0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334',
