@@ -1,7 +1,7 @@
 import { ContractDeployAddress } from '../../consts/deploy.address.const';
 import {
   deployUpgradeProxy,
-  deployUpgradeUpdate,
+  deployUpgradeUpdateWithProposal,
 } from '../../utils/deploy.util';
 const {
   CONTRACT_DEFAULT_CALLER_ADDRESS,
@@ -16,7 +16,7 @@ async function main() {
 
   const DeployContractName = 'MacondoPokerPass';
   if (contractAddress) {
-    const contract = await deployUpgradeUpdate(
+    const contract = await deployUpgradeUpdateWithProposal(
       DeployContractName,
       contractAddress
     );

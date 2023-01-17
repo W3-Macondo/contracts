@@ -7,7 +7,7 @@ const { CONTRACT_DEFAULT_CALLER_ADDRESS } = process.env;
 async function getContract() {
   const contract = await ethers.getContractAt(
     'MacondoPokerPassMinterBlindBox',
-    ContractDeployAddress.MacondoPokerPassMinterBlindBox
+    ContractDeployAddress.MacondoPokerPassMinterBlindBox as string
   );
   const [owner] = await ethers.getSigners();
 

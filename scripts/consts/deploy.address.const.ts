@@ -1,4 +1,5 @@
 import { hardhatArguments } from 'hardhat';
+import { deployNetwork } from './deploy.const';
 
 interface ContractDeployAddressInterface {
   MacondoBFB: string | null;
@@ -9,6 +10,7 @@ interface ContractDeployAddressInterface {
   MacondoTableNFTMinterBlindBox: string | null;
   MacondoPokerPass: string | null;
   MacondoPokerPassMinterBlindBox: string | null;
+  MacondoPokerPassMinterFreeMint: string | null;
   AccountBurn: string | null;
   PokerValidator: string | null;
   TokenCollection: string | null;
@@ -24,6 +26,7 @@ const ContractDeployAddress_BscTestNet: ContractDeployAddressInterface = {
   MacondoTableNFTMinterBlindBox: '0x3eae3657402FE9516093Ef6c7a3773c028BA5354',
   MacondoPokerPass: '0xc26AcBB08E7c30375748ad0D4462fD140d9BCDBc',
   MacondoPokerPassMinterBlindBox: '0x6c2f1e09B427fe3486cC1dc447D02fdB72A16D76',
+  MacondoPokerPassMinterFreeMint: '0xD9443Be8C89fED6aEC343c86F1f435FA205C0Dd7',
   AccountBurn: '0xA001e11eccae7926E68937A473C7a58DdE8B08F5',
   PokerValidator: '0x3d7Ea2034ca2d25B71EF55380e309d7b5884b2d3',
   TokenCollection: '0x8023cCfaF67a34628e6e3093B3557E6184782289',
@@ -36,21 +39,22 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   MacondoUSDT: null,
   MacondoUSDTFaucet: null,
   MacondoTableNFT: '0xf30957ECe0Ace9D2279d3365416af0e48Bd341B7',
-  MacondoTableNFTMinterBlindBox: null,
+  MacondoTableNFTMinterBlindBox: '0xD0c7C4E2718db68aF8d96C508a494784e887D88a',
   MacondoPokerPass: '0xa71625E8E7E4c5aDB97143eec25a6480854C4007',
-  MacondoPokerPassMinterBlindBox: null,
-  AccountBurn: null,
-  PokerValidator: null,
-  TokenCollection: null,
-  RandomOracleConsumer: null,
+  MacondoPokerPassMinterBlindBox: '0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52',
+  MacondoPokerPassMinterFreeMint: '0x350B1fe73BB888Ff8A169D6c33DD8d9cb9044197',
+  AccountBurn: '0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc',
+  PokerValidator: '0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334',
+  TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
+  RandomOracleConsumer: '0xcf9E0eBed4F78AC920042626cd37cABA34e698C7',
 };
 let _ContractDeployAddress: ContractDeployAddressInterface =
   ContractDeployAddress_BscTestNet;
 switch (hardhatArguments.network) {
-  case 'bsc_testnet':
+  case deployNetwork.bsc_testnet:
     _ContractDeployAddress = ContractDeployAddress_BscTestNet;
     break;
-  case 'bsc_mainnet':
+  case deployNetwork.bsc_mainnet:
     _ContractDeployAddress = ContractDeployAddress_BscMainNet;
     break;
   default:

@@ -52,6 +52,14 @@ contract NFTStoreSellerIncrease is Initializable, NFTStore {
         _sale(to, _tokenId, _uri, defaultConfig.price);
     }
 
+    function _saleFreeWithIncreaseTokenId(address to) internal virtual {
+        uint256 _tokenId = currentTokenId();
+        _tokenIdCounter.increment();
+
+        string memory _uri = _StoreItemTokenURI(_tokenId);
+        _saleFree(to, _tokenId, _uri);
+    }
+
     function _StoreItemTokenURI(uint256 tokenId)
         internal
         virtual

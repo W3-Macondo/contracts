@@ -105,6 +105,32 @@ contract NFTStore is Initializable, ContextUpgradeable {
             revert(string(abi.encodePacked("token already sold")));
         }
 
+        _saleImplement(to, tokenId, uri, price);
+    }
+
+    function _saleFree(
+        address to,
+        uint256 tokenId,
+        string memory uri
+    ) internal inSalePeriod checkTotalSupply {
+        //check to address
+        if (to == address(0)) {
+            revert(string(abi.encodePacked("to address cannot be 0")));
+        }
+        //check sold list
+        if (soldList[tokenId] != address(0)) {
+            revert(string(abi.encodePacked("token already sold")));
+        }
+
+        _saleImplement(to, tokenId, uri, 0);
+    }
+
+    function _saleImplement(
+        address to,
+        uint256 tokenId,
+        string memory uri,
+        uint256 price
+    ) internal {
         _saleBefore(to, tokenId, uri, price);
         //add sold count
         soldCount = soldCount.add(1);

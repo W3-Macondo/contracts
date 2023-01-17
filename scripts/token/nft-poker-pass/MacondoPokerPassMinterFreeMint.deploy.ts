@@ -1,12 +1,5 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-// const hre = require("hardhat");
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-
 import { ContractDeployAddress } from '../../consts/deploy.address.const';
 import { getRuntimeConfig } from '../../utils/config.util';
 import {
@@ -14,18 +7,20 @@ import {
   deployUpgradeUpdateWithProposal,
   deployUtil,
 } from '../../utils/deploy.util';
+
 const { CONTRACT_DEFAULT_CALLER_ADDRESS } = process.env;
+// Deployed contract address
+// export const deployedContractAddress = null;
+export const deployedContractAddress =
+  ContractDeployAddress.MacondoPokerPassMinterFreeMint;
 
 async function main() {
-  const contractAddressOfMacondoTableNFT =
-    ContractDeployAddress.MacondoTableNFT;
+  const contractAddressOfMacondoPokerPass =
+    ContractDeployAddress.MacondoPokerPass;
 
-  // const contractAddress = null;
-  //old nft contract address
-  const preContractAddress = null;
-  const contractAddress = ContractDeployAddress.MacondoTableNFTMinterBlindBox;
+  const contractAddress = deployedContractAddress;
 
-  const DeployContractName = 'MacondoTableNFTMinterBlindBox';
+  const DeployContractName = 'MacondoPokerPassMinterFreeMint';
   if (contractAddress) {
     const contract = await deployUpgradeUpdateWithProposal(
       DeployContractName,
@@ -34,14 +29,12 @@ async function main() {
   } else {
     const [deployer] = await ethers.getSigners();
     const contract = await deployUpgradeProxy(DeployContractName, [
-      contractAddressOfMacondoTableNFT,
+      contractAddressOfMacondoPokerPass,
       deployer.address,
     ]);
-
     await afterFirstDeployUpgradeProxy(contract);
   }
 }
-
 async function afterFirstDeployUpgradeProxy(contract: Contract) {
   const [deployer] = await ethers.getSigners();
   const runtimeConfig = getRuntimeConfig();
@@ -89,6 +82,10 @@ async function afterFirstDeployUpgradeProxy(contract: Contract) {
         roleName: 'saleManager',
       },
       {
+        roleId: ethers.utils.id('SALE_SIGNER_ROLE'),
+        roleName: 'saleSigner',
+      },
+      {
         roleId:
           '0x0000000000000000000000000000000000000000000000000000000000000000',
         roleName: 'admin',
@@ -98,8 +95,6 @@ async function afterFirstDeployUpgradeProxy(contract: Contract) {
   );
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main()
   .then(() => process.exit(0))
   .catch((error) => {

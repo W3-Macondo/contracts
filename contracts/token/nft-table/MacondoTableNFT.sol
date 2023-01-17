@@ -25,6 +25,8 @@ contract MacondoTableNFT is
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
+    string public tokenBaseURI;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -38,14 +40,29 @@ contract MacondoTableNFT is
         __AccessControl_init();
         __UUPSUpgradeable_init();
 
+        _setTokenBaseURI(
+            "https://macondo-nft-storage.s3.us-west-1.amazonaws.com/"
+        );
+
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
     }
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://macondo-nft-storage.s3.us-west-1.amazonaws.com/";
+    function _baseURI() internal view override returns (string memory) {
+        return tokenBaseURI;
+    }
+
+    function setTokenBaseURI(string memory baseURI)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        _setTokenBaseURI(baseURI);
+    }
+
+    function _setTokenBaseURI(string memory uri) internal {
+        tokenBaseURI = uri;
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {

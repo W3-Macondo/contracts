@@ -4,11 +4,10 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 // const hre = require("hardhat");
-import { ethers } from 'ethers';
 import { ContractDeployAddress } from '../../consts/deploy.address.const';
 import {
   deployUpgradeProxy,
-  deployUpgradeUpdate,
+  deployUpgradeUpdateWithProposal,
 } from '../../utils/deploy.util';
 const {
   CONTRACT_DEFAULT_CALLER_ADDRESS,
@@ -24,24 +23,12 @@ async function main() {
 
   const DeployContractName = 'MacondoTableNFT';
   if (contractAddress) {
-    const contract = await deployUpgradeUpdate(
+    const contract = await deployUpgradeUpdateWithProposal(
       DeployContractName,
       contractAddress
     );
-
-    // const newOwnerAddress = ethers.utils.computeAddress(
-    //   PRIVATE_KEY_RANDOM_CONSUMER_CONTRACT_CALLER as string
-    // );
-    // const tx = await contract.transferOwnership(newOwnerAddress);
-    // await tx.wait();
   } else {
     const contract = await deployUpgradeProxy(DeployContractName);
-
-    //grant minter role to caller
-    await contract.grantRole(
-      ethers.utils.id('MINTER_ROLE'),
-      CONTRACT_DEFAULT_CALLER_ADDRESS
-    );
   }
 }
 

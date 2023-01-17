@@ -60,7 +60,7 @@ describe('RandomOracleConsumer', function () {
     const s_randomWords = await contract.getRandomWords(s_requestId.toString());
 
     expect(s_randomWords).not.to.be.empty;
-    // console.log("s_randomWords", s_randomWords);
+    console.log('s_randomWords', s_randomWords);
   });
 
   it.skip('RandomOracleConsumer:Request random number emit', async function () {
