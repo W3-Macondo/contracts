@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { hardhatArguments } from 'hardhat';
+import { deployNetwork } from '../consts/deploy.const';
 
 export interface RuntimeConfig {
   network: string;
@@ -10,9 +11,9 @@ export interface RuntimeConfig {
 export function getRuntimeConfig(): RuntimeConfig {
   const network = hardhatArguments.network;
   switch (network) {
-    case 'bsc_testnet':
+    case deployNetwork.bsc_testnet:
       return getRuntimeConfigBscTestNet();
-    case 'bsc_mainnet':
+    case deployNetwork.bsc_mainnet:
       return getRuntimeConfigBscMainNet();
     default:
       throw new Error(`Network ${network} is not supported`);

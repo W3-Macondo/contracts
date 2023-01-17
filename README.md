@@ -22,6 +22,8 @@
   - [bscscan](https://bscscan.com/address/0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334)
 - `TokenCollection`:`0x030c9F97bB8287969E9303e0D8De1C7bfF768607`
   - [bscscan](https://bscscan.com/address/0x030c9F97bB8287969E9303e0D8De1C7bfF768607)
+- `RandomOracleConsumer`:`0xcf9E0eBed4F78AC920042626cd37cABA34e698C7`
+  - [bscscan](https://bscscan.com/address/0xcf9E0eBed4F78AC920042626cd37cABA34e698C7)
 
 ### bsc testnet
 

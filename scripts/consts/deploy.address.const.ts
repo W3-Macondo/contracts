@@ -1,4 +1,5 @@
 import { hardhatArguments } from 'hardhat';
+import { deployNetwork } from './deploy.const';
 
 interface ContractDeployAddressInterface {
   MacondoBFB: string | null;
@@ -45,15 +46,15 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   AccountBurn: '0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc',
   PokerValidator: '0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334',
   TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
-  RandomOracleConsumer: null,
+  RandomOracleConsumer: '0xcf9E0eBed4F78AC920042626cd37cABA34e698C7',
 };
 let _ContractDeployAddress: ContractDeployAddressInterface =
   ContractDeployAddress_BscTestNet;
 switch (hardhatArguments.network) {
-  case 'bsc_testnet':
+  case deployNetwork.bsc_testnet:
     _ContractDeployAddress = ContractDeployAddress_BscTestNet;
     break;
-  case 'bsc_mainnet':
+  case deployNetwork.bsc_mainnet:
     _ContractDeployAddress = ContractDeployAddress_BscMainNet;
     break;
   default:
