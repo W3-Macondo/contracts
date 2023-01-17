@@ -2,7 +2,7 @@
 
 ## contract addresses
 
-### mainnet bsc
+### bsc mainnet
 
 - `MacondoBFB`: `0x84c40628121CBd6CB40Dd5B12349bCD3ba010D6f`
   - [bscscan](https://bscscan.com/address/0x84c40628121CBd6CB40Dd5B12349bCD3ba010D6f)
@@ -24,29 +24,6 @@
   - [bscscan](https://bscscan.com/address/0x030c9F97bB8287969E9303e0D8De1C7bfF768607)
 - `RandomOracleConsumer`:`0xcf9E0eBed4F78AC920042626cd37cABA34e698C7`
   - [bscscan](https://bscscan.com/address/0xcf9E0eBed4F78AC920042626cd37cABA34e698C7)
-
-### bsc testnet
-
-- `MacondoBFB`: `0x849Ac2eAF42C7239A1f807f250928Eac23376C63`
-  - [bscscan](https://testnet.bscscan.com/address/0x849Ac2eAF42C7239A1f807f250928Eac23376C63)
-- `MacondoMCD`: `0xC3a787C2B1AB52e18bA5387a13c5B6551A89f006`
-  - [bscscan](https://testnet.bscscan.com/address/0xC3a787C2B1AB52e18bA5387a13c5B6551A89f006)
-- `MacondoTableNFT`:`0x1A516d0E324575Fd6BdD2E54FB9cFcB6C8F3e7A4`
-  - [bscscan](https://testnet.bscscan.com/address/0x1A516d0E324575Fd6BdD2E54FB9cFcB6C8F3e7A4)
-- `MacondoTableNFTMinterBlindBox`:`0x3eae3657402FE9516093Ef6c7a3773c028BA5354`
-  - [bscscan](https://testnet.bscscan.com/address/0x3eae3657402FE9516093Ef6c7a3773c028BA5354)
-- `MacondoPokerPass`:`0xc26AcBB08E7c30375748ad0D4462fD140d9BCDBc`
-  - [bscscan](https://testnet.bscscan.com/address/0xc26AcBB08E7c30375748ad0D4462fD140d9BCDBc)
-- `MacondoPokerPassMinterBlindBox`:`0x6c2f1e09B427fe3486cC1dc447D02fdB72A16D76`
-  - [bscscan](https://testnet.bscscan.com/address/0x6c2f1e09B427fe3486cC1dc447D02fdB72A16D76)
-- `AccountBurn`:`0xA001e11eccae7926E68937A473C7a58DdE8B08F5`
-  - [bscscan](https://testnet.bscscan.com/address/0xA001e11eccae7926E68937A473C7a58DdE8B08F5)
-- `PokerValidator`:`0x3d7Ea2034ca2d25B71EF55380e309d7b5884b2d3`
-  - [bscscan](https://testnet.bscscan.com/address/0x3d7Ea2034ca2d25B71EF55380e309d7b5884b2d3)
-- `TokenCollection`:`0x8023cCfaF67a34628e6e3093B3557E6184782289`
-  - [bscscan](https://testnet.bscscan.com/address/0x8023cCfaF67a34628e6e3093B3557E6184782289)
-- `RandomOracleConsumer`:`0x27e69a1acd722A0aA02F4bf611Ea797bFC4Ba3Ee`
-  - [bscscan](https://testnet.bscscan.com/address/0x27e69a1acd722A0aA02F4bf611Ea797bFC4Ba3Ee)
 
 ## how to develop and test
 
