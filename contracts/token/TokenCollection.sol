@@ -92,7 +92,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public onlyRole(WITHDRAW_ERC20) {
+    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
         _withdrawERC20(token, to, value);
     }
 
@@ -100,7 +100,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public onlyRole(WITHDRAW_ERC20) {
+    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
         //check token balance
         uint256 balance = token.balanceOf(address(this));
         if (balance < value) {
@@ -116,7 +116,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) internal whenNotPaused nonReentrant {
+    ) internal whenNotPaused {
         SafeERC20Upgradeable.safeTransfer(token, to, value);
         emit ERC20Withdraw(token, to, value);
     }

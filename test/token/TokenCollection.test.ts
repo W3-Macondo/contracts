@@ -144,12 +144,12 @@ describe('Contract TokenCollection', function () {
   });
 
   it('TokenCollection withdrawERC20WithMint Test', async function () {
-    const MacondoUSDT = await ethers.getContractFactory('MacondoUSDT');
-    const macondoUSDT = await upgrades.deployProxy(MacondoUSDT);
-    await macondoUSDT.deployed();
+    const MacondoBFB = await ethers.getContractFactory('MacondoBFB');
+    const macondoBFB = await upgrades.deployProxy(MacondoBFB);
+    await macondoBFB.deployed();
 
     //grant minter role
-    await macondoUSDT.grantRole(
+    await macondoBFB.grantRole(
       ethers.utils.id('MINTER_ROLE'),
       contract.address
     );
@@ -161,55 +161,55 @@ describe('Contract TokenCollection', function () {
       contract
         .connect(addr3)
         .withdrawERC20WithMint(
-          macondoUSDT.address,
+          macondoBFB.address,
           addr1.address,
           ethers.utils.parseEther('100')
         )
     )
       .to.emit(contract, 'ERC20Withdraw')
       .withArgs(
-        macondoUSDT.address,
+        macondoBFB.address,
         addr1.address,
         ethers.utils.parseEther('100')
       );
 
-    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+    await macondoBFB.balanceOf(contract.address).then((balance: string) => {
       expect(balance).to.equal(ethers.utils.parseEther('0'));
     });
 
-    await macondoUSDT.balanceOf(addr1.address).then((balance: string) => {
+    await macondoBFB.balanceOf(addr1.address).then((balance: string) => {
       expect(balance).to.equal(ethers.utils.parseEther('100'));
     });
 
     //mint 50 ether to contract
-    await macondoUSDT.mint(contract.address, ethers.utils.parseEther('50'));
+    await macondoBFB.mint(contract.address, ethers.utils.parseEther('50'));
 
     //expect macondoUSDT total supply is 150
-    await macondoUSDT.totalSupply().then((totalSupply: string) => {
-      expect(totalSupply).to.equal(ethers.utils.parseEther('1000000150'));
+    await macondoBFB.totalSupply().then((totalSupply: string) => {
+      expect(totalSupply).to.equal(ethers.utils.parseEther('150'));
     });
 
     await expect(
       contract
         .connect(addr3)
         .withdrawERC20WithMint(
-          macondoUSDT.address,
+          macondoBFB.address,
           addr1.address,
           ethers.utils.parseEther('100')
         )
     )
       .to.emit(contract, 'ERC20Withdraw')
       .withArgs(
-        macondoUSDT.address,
+        macondoBFB.address,
         addr1.address,
         ethers.utils.parseEther('100')
       );
 
-    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+    await macondoBFB.balanceOf(contract.address).then((balance: string) => {
       expect(balance).to.equal(ethers.utils.parseEther('0'));
     });
 
-    await macondoUSDT.balanceOf(addr1.address).then((balance: string) => {
+    await macondoBFB.balanceOf(addr1.address).then((balance: string) => {
       expect(balance).to.equal(ethers.utils.parseEther('200'));
     });
   });
