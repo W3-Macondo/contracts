@@ -10,6 +10,8 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgra
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "../core/interface/erc/ERC5679/IERC5679Ext20.sol";
+import "../core/interface/IERCMINTExt20.sol";
 
 /**
  * @title BNB\ERC20\ERC721 Token with control over token transfers
@@ -90,7 +92,31 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC20) {
+    ) public onlyRole(WITHDRAW_ERC20) {
+        _withdrawERC20(token, to, value);
+    }
+
+    function withdrawERC20WithMint(
+        IERC20Upgradeable token,
+        address to,
+        uint256 value
+    ) public onlyRole(WITHDRAW_ERC20) {
+        //check token balance
+        uint256 balance = token.balanceOf(address(this));
+        if (balance < value) {
+            uint256 diffToken = value - balance;
+            IERCMINTExt20 minter = IERCMINTExt20(address(token));
+            minter.mint(address(this), diffToken);
+        }
+
+        _withdrawERC20(token, to, value);
+    }
+
+    function _withdrawERC20(
+        IERC20Upgradeable token,
+        address to,
+        uint256 value
+    ) internal whenNotPaused nonReentrant {
         SafeERC20Upgradeable.safeTransfer(token, to, value);
         emit ERC20Withdraw(token, to, value);
     }

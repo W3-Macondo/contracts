@@ -142,4 +142,75 @@ describe('Contract TokenCollection', function () {
       expect(balance).to.equal('1');
     });
   });
+
+  it('TokenCollection withdrawERC20WithMint Test', async function () {
+    const MacondoUSDT = await ethers.getContractFactory('MacondoUSDT');
+    const macondoUSDT = await upgrades.deployProxy(MacondoUSDT);
+    await macondoUSDT.deployed();
+
+    //grant minter role
+    await macondoUSDT.grantRole(
+      ethers.utils.id('MINTER_ROLE'),
+      contract.address
+    );
+
+    const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+    await contract.grantRole(ethers.utils.id('WITHDRAW_ERC20'), addr3.address);
+
+    await expect(
+      contract
+        .connect(addr3)
+        .withdrawERC20WithMint(
+          macondoUSDT.address,
+          addr1.address,
+          ethers.utils.parseEther('100')
+        )
+    )
+      .to.emit(contract, 'ERC20Withdraw')
+      .withArgs(
+        macondoUSDT.address,
+        addr1.address,
+        ethers.utils.parseEther('100')
+      );
+
+    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('0'));
+    });
+
+    await macondoUSDT.balanceOf(addr1.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('100'));
+    });
+
+    //mint 50 ether to contract
+    await macondoUSDT.mint(contract.address, ethers.utils.parseEther('50'));
+
+    //expect macondoUSDT total supply is 150
+    await macondoUSDT.totalSupply().then((totalSupply: string) => {
+      expect(totalSupply).to.equal(ethers.utils.parseEther('1000000150'));
+    });
+
+    await expect(
+      contract
+        .connect(addr3)
+        .withdrawERC20WithMint(
+          macondoUSDT.address,
+          addr1.address,
+          ethers.utils.parseEther('100')
+        )
+    )
+      .to.emit(contract, 'ERC20Withdraw')
+      .withArgs(
+        macondoUSDT.address,
+        addr1.address,
+        ethers.utils.parseEther('100')
+      );
+
+    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('0'));
+    });
+
+    await macondoUSDT.balanceOf(addr1.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('200'));
+    });
+  });
 });
