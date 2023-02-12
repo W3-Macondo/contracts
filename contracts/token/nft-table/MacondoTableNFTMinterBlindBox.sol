@@ -144,6 +144,10 @@ contract MacondoTableNFTMinterBlindBox is
         withdrawAddress = _withdrawAddress;
     }
 
+    function getWithdrawAddress() external view returns (address) {
+        return withdrawAddress;
+    }
+
     function withdraw() external nonReentrant onlyRole(SALE_MANAGE_ROLE) {
         _withdraw(withdrawAddress);
     }
