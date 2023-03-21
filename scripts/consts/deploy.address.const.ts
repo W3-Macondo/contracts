@@ -1,20 +1,22 @@
 import { hardhatArguments } from 'hardhat';
 import { deployNetwork } from './deploy.const';
 
+type ContractDeployAddress = string | null;
+
 interface ContractDeployAddressInterface {
-  MacondoBFB: string | null;
-  MacondoMCD: string | null;
-  MacondoUSDT: string | null;
-  MacondoUSDTFaucet: string | null;
-  MacondoTableNFT: string | null;
-  MacondoTableNFTMinterBlindBox: string | null;
-  MacondoPokerPass: string | null;
-  MacondoPokerPassMinterBlindBox: string | null;
-  MacondoPokerPassMinterFreeMint: string | null;
-  AccountBurn: string | null;
-  PokerValidator: string | null;
-  TokenCollection: string | null;
-  RandomOracleConsumer: string | null;
+  MacondoBFB?: ContractDeployAddress;
+  MacondoMCD?: ContractDeployAddress;
+  MacondoUSDT?: ContractDeployAddress;
+  MacondoUSDTFaucet?: ContractDeployAddress;
+  MacondoTableNFT?: ContractDeployAddress;
+  MacondoTableNFTMinterBlindBox?: ContractDeployAddress;
+  MacondoPokerPass?: ContractDeployAddress;
+  MacondoPokerPassMinterBlindBox?: ContractDeployAddress;
+  MacondoPokerPassMinterFreeMint?: ContractDeployAddress;
+  AccountBurn?: ContractDeployAddress;
+  PokerValidator?: ContractDeployAddress;
+  TokenCollection?: ContractDeployAddress;
+  RandomOracleConsumer?: ContractDeployAddress;
 }
 
 const ContractDeployAddress_BscTestNet: ContractDeployAddressInterface = {

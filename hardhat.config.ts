@@ -9,11 +9,12 @@ import 'hardhat-abi-exporter';
 const {
   ALCHEMY_API_TESTNET_URL,
   PRIVATE_KEY,
-  HARDHAT_BLOCKNUMBER,
   BSC_TESTNET_URL,
   BSC_TESTNET_DEPLOYER_PRIVATE_KEY,
   BSC_MAINNET_URL,
   BSC_MAINNET_DEPLOYER_PRIVATE_KEY,
+  ARBITRUM_TESTNET_URL,
+  ARBITRUM_TESTNET_DEPLOYER_PRIVATE_KEY,
 } = process.env;
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -53,6 +54,15 @@ module.exports = {
     mumbai: {
       url: ALCHEMY_API_TESTNET_URL,
       accounts: [`0x${PRIVATE_KEY}`],
+    },
+    arbitrum_testnet: {
+      url: ARBITRUM_TESTNET_URL,
+      chainId: 421613,
+      accounts: [`0x${ARBITRUM_TESTNET_DEPLOYER_PRIVATE_KEY}`],
+    },
+    arbitrum_mainnet: {
+      url: BSC_MAINNET_URL,
+      accounts: [`0x${BSC_MAINNET_DEPLOYER_PRIVATE_KEY}`],
     },
   },
   mocha: {
