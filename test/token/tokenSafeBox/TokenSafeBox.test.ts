@@ -48,7 +48,7 @@ describe('Contract TokenSafeBox', function () {
     });
   });
 
-  it.only('TokenSafeBox Transfer And withdraw ERC20 Test', async function () {
+  it('TokenSafeBox Transfer And withdraw ERC20 Test', async function () {
     const MacondoUSDT = await ethers.getContractFactory('MacondoUSDT');
     const macondoUSDT = await upgrades.deployProxy(MacondoUSDT);
     await macondoUSDT.deployed();

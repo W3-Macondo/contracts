@@ -50,14 +50,24 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
   RandomOracleConsumer: '0xcf9E0eBed4F78AC920042626cd37cABA34e698C7',
 };
-let _ContractDeployAddress: ContractDeployAddressInterface =
-  ContractDeployAddress_BscTestNet;
+const ContractDeployAddress_ArbitrumTestNet: ContractDeployAddressInterface =
+  {};
+const ContractDeployAddress_ArbitrumMainNet: ContractDeployAddressInterface =
+  {};
+let _ContractDeployAddress: ContractDeployAddressInterface = null as any;
+
 switch (hardhatArguments.network) {
   case deployNetwork.bsc_testnet:
     _ContractDeployAddress = ContractDeployAddress_BscTestNet;
     break;
   case deployNetwork.bsc_mainnet:
     _ContractDeployAddress = ContractDeployAddress_BscMainNet;
+    break;
+  case deployNetwork.arbitrum_testnet:
+    _ContractDeployAddress = ContractDeployAddress_ArbitrumTestNet;
+    break;
+  case deployNetwork.arbitrum_mainnet:
+    _ContractDeployAddress = ContractDeployAddress_ArbitrumMainNet;
     break;
   default:
     _ContractDeployAddress = undefined as any;
