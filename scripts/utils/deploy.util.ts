@@ -3,6 +3,19 @@ import { Contract, ContractFactory, ContractTransaction } from 'ethers';
 import hre, { defender, ethers, upgrades } from 'hardhat';
 import { getRuntimeConfig } from './config.util';
 
+async function _deployBefore(contractName: string) {
+  const [deployer] = await hre.ethers.getSigners();
+  console.log(
+    `[deploy contract]:deployer, contract:${contractName}, signer address:${deployer.address}`
+  );
+  console.log('[deploy contract] signer address:', deployer.address);
+  const deployerBalanceAfter = await deployer.getBalance();
+  console.log(
+    '[deploy contract] signer balance:',
+    hre.ethers.utils.formatEther(deployerBalanceAfter)
+  );
+}
+
 /**
  *
  * @param DeployContractName
@@ -53,6 +66,7 @@ export async function deployNormal(
   const DeployContract = await hre.ethers.getContractFactory(
     DeployContractName
   );
+  _deployBefore(DeployContractName);
   const deployContract = await DeployContract.deploy(...args);
   return _deploy(DeployContractName, deployContract);
 }
@@ -71,6 +85,8 @@ export async function deployUpgradeProxy(
   const DeployContract = await hre.ethers.getContractFactory(
     DeployContractName
   );
+  _deployBefore(DeployContractName);
+
   const deployContract = await upgrades.deployProxy(DeployContract, args, opts);
   return _deploy(DeployContractName, deployContract);
 }
@@ -86,6 +102,7 @@ export async function deployUpgradeUpdate(
 ): Promise<Contract> {
   console.log('[deploy contract]:deploy [%s] upgrade ...', contractName);
   const DeployContractName = contractName;
+  _deployBefore(DeployContractName);
   const DeployContract = await getContractFactory(DeployContractName);
   const deployContract = await upgrades.upgradeProxy(
     contractAddress,

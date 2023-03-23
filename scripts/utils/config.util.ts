@@ -19,6 +19,10 @@ export function getRuntimeConfig(): RuntimeConfig {
       return getRuntimeConfigArbitrumTestNet();
     case deployNetwork.arbitrum_mainnet:
       return getRuntimeConfigArbitrumMainNet();
+    case deployNetwork.eth_testnet:
+      return getRuntimeConfigETHTestNet();
+    case deployNetwork.eth_mainnet:
+      return getRuntimeConfigETHMainNet();
     default:
       throw new Error(`Network ${network} is not supported`);
   }
@@ -53,5 +57,21 @@ function getRuntimeConfigArbitrumMainNet(): RuntimeConfig {
     network: 'arbitrum_mainnet',
     upgradeDefenderMultiSigAddress:
       process.env.ARBITRUM_TESTNET_DEPLOYER_UPGRADE_MULTISIG_ADDRESS,
+  };
+}
+
+function getRuntimeConfigETHTestNet(): RuntimeConfig {
+  return {
+    network: 'eth_testnet',
+    upgradeDefenderMultiSigAddress:
+      process.env.ETH_TESTNET_DEPLOYER_UPGRADE_MULTISIG_ADDRESS,
+  };
+}
+
+function getRuntimeConfigETHMainNet(): RuntimeConfig {
+  return {
+    network: 'eth_mainnet',
+    upgradeDefenderMultiSigAddress:
+      process.env.ETH_MAINNET_DEPLOYER_UPGRADE_MULTISIG_ADDRESS,
   };
 }

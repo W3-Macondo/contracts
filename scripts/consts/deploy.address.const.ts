@@ -50,10 +50,16 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
   RandomOracleConsumer: '0xcf9E0eBed4F78AC920042626cd37cABA34e698C7',
 };
-const ContractDeployAddress_ArbitrumTestNet: ContractDeployAddressInterface =
-  {};
+const ContractDeployAddress_ArbitrumTestNet: ContractDeployAddressInterface = {
+  PokerValidator: '0x576f54c39Cb8172C92F315464267E09BD97F960B',
+};
 const ContractDeployAddress_ArbitrumMainNet: ContractDeployAddressInterface =
   {};
+
+const ContractDeployAddress_ETHTestNet: ContractDeployAddressInterface = {
+  MacondoBFB: '0x27e69a1acd722A0aA02F4bf611Ea797bFC4Ba3Ee',
+};
+const ContractDeployAddress_ETHMainNet: ContractDeployAddressInterface = {};
 let _ContractDeployAddress: ContractDeployAddressInterface = null as any;
 
 switch (hardhatArguments.network) {
@@ -68,6 +74,12 @@ switch (hardhatArguments.network) {
     break;
   case deployNetwork.arbitrum_mainnet:
     _ContractDeployAddress = ContractDeployAddress_ArbitrumMainNet;
+    break;
+  case deployNetwork.eth_testnet:
+    _ContractDeployAddress = ContractDeployAddress_ETHTestNet;
+    break;
+  case deployNetwork.eth_mainnet:
+    _ContractDeployAddress = ContractDeployAddress_ETHMainNet;
     break;
   default:
     _ContractDeployAddress = undefined as any;

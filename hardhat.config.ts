@@ -15,6 +15,8 @@ const {
   BSC_MAINNET_DEPLOYER_PRIVATE_KEY,
   ARBITRUM_TESTNET_URL,
   ARBITRUM_TESTNET_DEPLOYER_PRIVATE_KEY,
+  ETH_TESTNET_URL,
+  ETH_TESTNET_DEPLOYER_PRIVATE_KEY,
 } = process.env;
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -63,6 +65,12 @@ module.exports = {
     arbitrum_mainnet: {
       url: BSC_MAINNET_URL,
       accounts: [`0x${BSC_MAINNET_DEPLOYER_PRIVATE_KEY}`],
+    },
+    eth_testnet: {
+      url: ETH_TESTNET_URL,
+      chainId: 5,
+      gasPrice: 50000000000,
+      accounts: [`0x${ETH_TESTNET_DEPLOYER_PRIVATE_KEY}`],
     },
   },
   mocha: {
