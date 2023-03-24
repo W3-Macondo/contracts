@@ -57,6 +57,7 @@ async function cancelTx() {
 }
 
 async function tokenL1ToL2() {
+  console.log('tokenL1ToL2');
   console.log('erc20Address', erc20Address);
 
   //   await cancelTx();
@@ -208,8 +209,76 @@ async function tokenL1ToL2() {
   await checkL2Balance();
 }
 
+async function tokenL2ToL1() {
+  console.log('tokenL2ToL1');
+  console.log('erc20Address', erc20Address);
+
+  /**
+   * Use l2Network to create an Arbitrum SDK Erc20Bridger instance
+   * We'll use Erc20Bridger for its convenience methods around transferring token to L2 and back to L1
+   */
+  const l2Network = await getL2Network(l2Provider);
+  const erc20Bridge = new Erc20Bridger(l2Network);
+
+  const withdraw = async (tokenWithdrawAmount: BigNumber) => {
+    console.log('Withdrawing:');
+
+    /**
+     * ... Okay, Now we begin withdrawing DappToken from L2. To withdraw, we'll use Erc20Bridger helper method withdraw
+     * withdraw will call our L2 Gateway Router to initiate a withdrawal via the Standard ERC20 gateway
+     * This transaction is constructed and paid for like any other L2 transaction (it just happens to (ultimately) make a call to ArbSys.sendTxToL1)
+     * Arguments required are:
+     * (1) amount: The amount of tokens to be transferred to L1
+     * (2) erc20L1Address: L1 address of the ERC20 token
+     * (3) l2Signer: The L2 address transferring token to L1
+     */
+
+    const withdrawTx = await erc20Bridge.withdraw({
+      amount: tokenWithdrawAmount,
+      destinationAddress: l2Wallet.address,
+      erc20l1Address: erc20Address,
+      l2Signer: l2Wallet,
+    });
+
+    console.log('withdrawTx', withdrawTx.hash);
+
+    const withdrawRec = await withdrawTx.wait();
+    console.log(
+      `Token withdrawal initiated! 🥳 ${withdrawRec.transactionHash}`
+    );
+  };
+
+  const checkL2Balance = async () => {
+    /**
+     * And with that, our withdrawal is initiated! No additional time-sensitive actions are required.
+     * Any time after the transaction's assertion is confirmed, funds can be transferred out of the bridge via the outbox contract
+     * We'll check our l2Wallet DappToken balance here:
+     */
+
+    const l2Token = erc20Bridge.getL2TokenContract(
+      l2Provider,
+      await erc20Bridge.getL2ERC20Address(erc20Address, l1Provider)
+    );
+
+    const l2WalletBalance = (
+      await l2Token.functions.balanceOf(await l2Wallet.getAddress())
+    )[0];
+
+    console.log(
+      'l2Wallet DappToken balance:',
+      ethers.utils.formatEther(l2WalletBalance)
+    );
+  };
+
+  await checkL2Balance();
+  const tokenWithdrawAmount = ethers.utils.parseEther('0.01');
+  await withdraw(tokenWithdrawAmount);
+  await checkL2Balance();
+}
+
 async function main() {
   // await tokenL1ToL2();
+  // await tokenL2ToL1();
 }
 
 main()
