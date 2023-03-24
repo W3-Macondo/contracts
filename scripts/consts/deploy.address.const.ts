@@ -60,31 +60,36 @@ const ContractDeployAddress_ETHTestNet: ContractDeployAddressInterface = {
   MacondoBFB: '0x27e69a1acd722A0aA02F4bf611Ea797bFC4Ba3Ee',
 };
 const ContractDeployAddress_ETHMainNet: ContractDeployAddressInterface = {};
-let _ContractDeployAddress: ContractDeployAddressInterface = null as any;
 
-switch (hardhatArguments.network) {
-  case deployNetwork.bsc_testnet:
-    _ContractDeployAddress = ContractDeployAddress_BscTestNet;
-    break;
-  case deployNetwork.bsc_mainnet:
-    _ContractDeployAddress = ContractDeployAddress_BscMainNet;
-    break;
-  case deployNetwork.arbitrum_testnet:
-    _ContractDeployAddress = ContractDeployAddress_ArbitrumTestNet;
-    break;
-  case deployNetwork.arbitrum_mainnet:
-    _ContractDeployAddress = ContractDeployAddress_ArbitrumMainNet;
-    break;
-  case deployNetwork.eth_testnet:
-    _ContractDeployAddress = ContractDeployAddress_ETHTestNet;
-    break;
-  case deployNetwork.eth_mainnet:
-    _ContractDeployAddress = ContractDeployAddress_ETHMainNet;
-    break;
-  default:
-    _ContractDeployAddress = undefined as any;
-    break;
+export function getContractDeployAddress(
+  network?: string
+): ContractDeployAddressInterface {
+  let _ContractDeployAddress: ContractDeployAddressInterface = null as any;
+  switch (network) {
+    case deployNetwork.bsc_testnet:
+      _ContractDeployAddress = ContractDeployAddress_BscTestNet;
+      break;
+    case deployNetwork.bsc_mainnet:
+      _ContractDeployAddress = ContractDeployAddress_BscMainNet;
+      break;
+    case deployNetwork.arbitrum_testnet:
+      _ContractDeployAddress = ContractDeployAddress_ArbitrumTestNet;
+      break;
+    case deployNetwork.arbitrum_mainnet:
+      _ContractDeployAddress = ContractDeployAddress_ArbitrumMainNet;
+      break;
+    case deployNetwork.eth_testnet:
+      _ContractDeployAddress = ContractDeployAddress_ETHTestNet;
+      break;
+    case deployNetwork.eth_mainnet:
+      _ContractDeployAddress = ContractDeployAddress_ETHMainNet;
+      break;
+    default:
+      _ContractDeployAddress = undefined as any;
+      break;
+  }
+  return _ContractDeployAddress;
 }
 
 export const ContractDeployAddress: ContractDeployAddressInterface =
-  _ContractDeployAddress;
+  getContractDeployAddress(hardhatArguments?.network) as any;
