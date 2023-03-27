@@ -43,7 +43,7 @@ const ContractDeployAddress_BscMainNet: ContractDeployAddressInterface = {
   MacondoPokerPass: '0xa71625E8E7E4c5aDB97143eec25a6480854C4007',
   MacondoPokerPassMinterBlindBox: '0x054cFB0B2eCeDaAa4078baFFBBafC212A1170C52',
   MacondoPokerPassMinterFreeMint: '0x350B1fe73BB888Ff8A169D6c33DD8d9cb9044197',
-  AccountBurn: '0x2acBDfA36E82f0E8Fb4D34b327BfB6282325e7Fc',
+  AccountBurn: '0x25a300A7EB3fB545968C3f73777CC61581FB009F',
   PokerValidator: '0x9aAc4d1D1653c2573d5f51C65fc456B250Ceb334',
   TokenCollection: '0x030c9F97bB8287969E9303e0D8De1C7bfF768607',
   RandomOracleConsumer: '0xcf9E0eBed4F78AC920042626cd37cABA34e698C7',
