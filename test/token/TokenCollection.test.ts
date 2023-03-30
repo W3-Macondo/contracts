@@ -367,4 +367,61 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
       contract.connect(addr1).withdrawWithSignature(amount, signature)
     ).to.revertedWith('Address: insufficient balance');
   });
+
+  it('TokenCollection Transfer And withdraw ERC20 using signature Test', async function () {
+    const MacondoUSDT = await ethers.getContractFactory('MacondoUSDT');
+    const macondoUSDT = await upgrades.deployProxy(MacondoUSDT);
+    await macondoUSDT.deployed();
+
+    const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+    const role = ethers.utils.id('WITHDRAW_ERC20');
+    contract.grantRole(role, addr3.address);
+
+    const amount = ethers.utils.parseEther('100');
+    await macondoUSDT.mint(addr1.address, amount);
+
+    // transfer 100 macondoUSDT to contract
+    await macondoUSDT.connect(addr1).transfer(contract.address, amount);
+
+    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(amount);
+    });
+
+    let nonce: BigNumber = await contract.connect(addr1).getNonce();
+    expect(nonce.toString()).to.equal('0');
+    let hash = getMessageHash(addr1.address, amount, nonce);
+    let signature = await addr3.signMessage(hash);
+    let recovery = await contract.recoverSigner(hash, signature);
+    expect(recovery).to.equal(addr3.address);
+
+    await expect(
+      contract
+        .connect(addr1)
+        .withdrawERC20WithSignature(macondoUSDT.address, amount, signature)
+    )
+      .to.emit(contract, 'ERC20Withdraw')
+      .withArgs(macondoUSDT.address, addr1.address, amount);
+
+    const balanceEmpty = ethers.utils.parseEther('0');
+    await macondoUSDT.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(balanceEmpty);
+    });
+
+    await macondoUSDT.balanceOf(addr1.address).then((balance: string) => {
+      expect(balance).to.equal(amount);
+    });
+
+    nonce = await contract.connect(addr1).getNonce();
+    expect(nonce.toString()).to.equal('1');
+    hash = getMessageHash(addr1.address, amount, nonce);
+    signature = await addr3.signMessage(hash);
+    recovery = await contract.recoverSigner(hash, signature);
+    expect(recovery).to.equal(addr3.address);
+
+    await expect(
+      contract
+        .connect(addr1)
+        .withdrawERC20WithSignature(macondoUSDT.address, amount, signature)
+    ).to.revertedWith('ERC20: transfer amount exceeds balance');
+  });
 });

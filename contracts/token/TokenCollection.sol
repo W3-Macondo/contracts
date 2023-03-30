@@ -130,6 +130,18 @@ contract TokenCollection is
         _withdrawERC20(token, to, value);
     }
 
+    function withdrawERC20WithSignature(
+        IERC20Upgradeable token,
+        uint256 value,
+        bytes memory signature
+    ) public nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(_to, value, signature, WITHDRAW_ERC20);
+
+        _withdrawERC20(token, _to, value);
+    }
+
     function getNonce() public view returns (uint256) {
         return nonces[_msgSender()];
     }
