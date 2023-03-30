@@ -1,7 +1,16 @@
 import { expect } from 'chai';
 import { randomInt } from 'crypto';
-import { Contract } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { ethers, upgrades } from 'hardhat';
+
+function getMessageHash(to: string, value: BigNumber, nonce: BigNumber) {
+  const messageHash = ethers.utils.solidityKeccak256(
+    ['address', 'uint256', 'uint256'],
+    [to, value, nonce]
+  );
+
+  return ethers.utils.arrayify(messageHash);
+}
 
 describe('Contract TokenCollection', function () {
   let contract: Contract;
@@ -211,6 +220,100 @@ describe('Contract TokenCollection', function () {
 
     await macondoBFB.balanceOf(addr1.address).then((balance: string) => {
       expect(balance).to.equal(ethers.utils.parseEther('200'));
+    });
+  });
+});
+
+describe('Contract TokenCollection Withdraw using Signature', function () {
+  let contract: Contract;
+
+  beforeEach(async function () {
+    const TokenCollection = await ethers.getContractFactory('TokenCollection');
+    contract = await upgrades.deployProxy(TokenCollection, []);
+    await contract.deployed();
+  });
+
+  it('TokenCollection withdrawERC20WithMintWithSignature Test', async function () {
+    const MacondoBFB = await ethers.getContractFactory('MacondoBFB');
+    const macondoBFB = await upgrades.deployProxy(MacondoBFB);
+    await macondoBFB.deployed();
+
+    //grant minter role
+    await macondoBFB.grantRole(
+      ethers.utils.id('MINTER_ROLE'),
+      contract.address
+    );
+
+    const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+    await contract.grantRole(ethers.utils.id('WITHDRAW_ERC20'), addr3.address);
+
+    const nonce: BigNumber = await contract.connect(addr1).getNonce();
+    expect(nonce.toString()).to.equal('0');
+
+    const amount = ethers.utils.parseEther('100');
+
+    const hash = getMessageHash(addr1.address, amount, nonce);
+    const signature = await addr3.signMessage(hash);
+    const recovery = await contract.recoverSigner(hash, signature);
+    expect(recovery).to.equal(addr3.address);
+
+    await expect(
+      contract
+        .connect(addr1)
+        .withdrawERC20WithMintWithSignature(
+          macondoBFB.address,
+          amount,
+          signature
+        )
+    )
+      .to.emit(contract, 'ERC20Withdraw')
+      .withArgs(macondoBFB.address, addr1.address, amount);
+
+    await macondoBFB.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('0'));
+    });
+
+    await macondoBFB.balanceOf(addr1.address).then((balance: string) => {
+      expect(balance).to.equal(amount);
+    });
+
+    //mint 50 ether to contract
+    await macondoBFB.mint(contract.address, ethers.utils.parseEther('50'));
+
+    //expect macondoUSDT total supply is 150
+    await macondoBFB.totalSupply().then((totalSupply: string) => {
+      expect(totalSupply).to.equal(ethers.utils.parseEther('150'));
+    });
+
+    const secondNonce: BigNumber = await contract.connect(addr1).getNonce();
+    expect(secondNonce.toString()).to.equal('1');
+    const secondAmount = ethers.utils.parseEther('100');
+
+    const secondHash = getMessageHash(addr1.address, secondAmount, secondNonce);
+    const secondSignature = await addr3.signMessage(secondHash);
+    const secondRecovery = await contract.recoverSigner(
+      secondHash,
+      secondSignature
+    );
+    expect(secondRecovery).to.equal(addr3.address);
+    await expect(
+      contract
+        .connect(addr1)
+        .withdrawERC20WithMintWithSignature(
+          macondoBFB.address,
+          amount,
+          secondSignature
+        )
+    )
+      .to.emit(contract, 'ERC20Withdraw')
+      .withArgs(macondoBFB.address, addr1.address, secondAmount);
+
+    await macondoBFB.balanceOf(contract.address).then((balance: string) => {
+      expect(balance).to.equal(ethers.utils.parseEther('0'));
+    });
+
+    await macondoBFB.balanceOf(addr1.address).then((balance: string) => {
+      expect(balance).to.equal(amount.add(secondAmount));
     });
   });
 });
