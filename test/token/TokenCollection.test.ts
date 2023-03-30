@@ -3,7 +3,7 @@ import { randomInt } from 'crypto';
 import { BigNumber, Contract } from 'ethers';
 import { ethers, upgrades } from 'hardhat';
 
-function getMessageHash(to: string, value: string, nonce: BigNumber) {
+function getMessageHash(to: string, value: BigNumber, nonce: BigNumber) {
   const messageHash = ethers.utils.solidityKeccak256(
     ['address', 'uint256', 'uint256'],
     [to, value, nonce]
@@ -252,7 +252,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     const amount = ethers.utils.parseEther('100');
 
-    const hash = getMessageHash(addr1.address, amount.toString(), nonce);
+    const hash = getMessageHash(addr1.address, amount, nonce);
     const signature = await addr3.signMessage(hash);
     const recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -289,11 +289,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
     expect(secondNonce.toString()).to.equal('1');
     const secondAmount = ethers.utils.parseEther('100');
 
-    const secondHash = getMessageHash(
-      addr1.address,
-      secondAmount.toString(),
-      secondNonce
-    );
+    const secondHash = getMessageHash(addr1.address, secondAmount, secondNonce);
     const secondSignature = await addr3.signMessage(secondHash);
     const secondRecovery = await contract.recoverSigner(
       secondHash,
@@ -344,7 +340,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     let nonce: BigNumber = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('0');
-    let hash = getMessageHash(addr1.address, amount.toString(), nonce);
+    let hash = getMessageHash(addr1.address, amount, nonce);
     let signature = await addr3.signMessage(hash);
     let recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -362,7 +358,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     nonce = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('1');
-    hash = getMessageHash(addr1.address, amount.toString(), nonce);
+    hash = getMessageHash(addr1.address, amount, nonce);
     signature = await addr3.signMessage(hash);
     recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -393,7 +389,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     let nonce: BigNumber = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('0');
-    let hash = getMessageHash(addr1.address, amount.toString(), nonce);
+    let hash = getMessageHash(addr1.address, amount, nonce);
     let signature = await addr3.signMessage(hash);
     let recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -417,7 +413,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     nonce = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('1');
-    hash = getMessageHash(addr1.address, amount.toString(), nonce);
+    hash = getMessageHash(addr1.address, amount, nonce);
     signature = await addr3.signMessage(hash);
     recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -440,6 +436,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     // mint nft
     const tokenId = randomInt(1000000);
+    const tokenIdBigNumber = BigNumber.from(tokenId);
     await macondoNFT.safeMint(addr1.address, tokenId, ERC721_URI);
 
     // transfer nft to contract
@@ -457,7 +454,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     let nonce: BigNumber = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('0');
-    let hash = getMessageHash(addr1.address, tokenId.toString(), nonce);
+    let hash = getMessageHash(addr1.address, tokenIdBigNumber, nonce);
     let signature = await addr3.signMessage(hash);
     let recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);
@@ -480,7 +477,7 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
 
     nonce = await contract.connect(addr1).getNonce();
     expect(nonce.toString()).to.equal('1');
-    hash = getMessageHash(addr1.address, tokenId.toString(), nonce);
+    hash = getMessageHash(addr1.address, tokenIdBigNumber, nonce);
     signature = await addr3.signMessage(hash);
     recovery = await contract.recoverSigner(hash, signature);
     expect(recovery).to.equal(addr3.address);

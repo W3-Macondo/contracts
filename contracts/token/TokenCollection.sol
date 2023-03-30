@@ -99,14 +99,14 @@ contract TokenCollection is
     function withdraw(
         address payable to,
         uint256 amount
-    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW) {
+    ) external nonReentrant onlyRole(WITHDRAW) {
         _withdraw(to, amount);
     }
 
     function withdrawWithSignature(
         uint256 amount,
         bytes memory signature
-    ) public whenNotPaused nonReentrant {
+    ) external nonReentrant {
         address _to = _msgSender();
 
         _checkWithdrawRoleWithSignature(_to, amount, signature, WITHDRAW);
@@ -126,7 +126,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
+    ) external nonReentrant onlyRole(WITHDRAW_ERC20) {
         _withdrawERC20(token, to, value);
     }
 
@@ -158,7 +158,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         uint256 value,
         bytes memory signature
-    ) public nonReentrant {
+    ) external nonReentrant {
         address _to = _msgSender();
 
         _checkWithdrawRoleWithSignature(_to, value, signature, WITHDRAW_ERC20);
@@ -170,7 +170,7 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
+    ) external nonReentrant onlyRole(WITHDRAW_ERC20) {
         _withdrawERC20WithMint(token, to, value);
     }
 
@@ -212,7 +212,7 @@ contract TokenCollection is
         IERC721Upgradeable token,
         address to,
         uint256 tokenId
-    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC721) {
+    ) external nonReentrant onlyRole(WITHDRAW_ERC721) {
         _withdrawERC721(token, to, tokenId);
     }
 
@@ -220,7 +220,7 @@ contract TokenCollection is
         IERC721Upgradeable token,
         uint256 tokenId,
         bytes memory signature
-    ) public whenNotPaused nonReentrant {
+    ) external nonReentrant {
         address _to = _msgSender();
 
         _checkWithdrawRoleWithSignature(
