@@ -199,12 +199,37 @@ contract TokenCollection is
         emit ERC20Withdraw(token, to, value);
     }
 
+    function _withdrawERC721(
+        IERC721Upgradeable token,
+        address to,
+        uint256 tokenId
+    ) internal whenNotPaused {
+        token.safeTransferFrom(address(this), to, tokenId);
+        emit ERC721Withdraw(token, to, tokenId);
+    }
+
     function withdrawERC721(
         IERC721Upgradeable token,
         address to,
         uint256 tokenId
     ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC721) {
-        token.safeTransferFrom(address(this), to, tokenId);
-        emit ERC721Withdraw(token, to, tokenId);
+        _withdrawERC721(token, to, tokenId);
+    }
+
+    function withdrawERC721WithSignature(
+        IERC721Upgradeable token,
+        uint256 tokenId,
+        bytes memory signature
+    ) public whenNotPaused nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(
+            _to,
+            tokenId,
+            signature,
+            WITHDRAW_ERC721
+        );
+
+        _withdrawERC721(token, _to, tokenId);
     }
 }
