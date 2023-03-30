@@ -316,4 +316,55 @@ describe('Contract TokenCollection Withdraw using Signature', function () {
       expect(balance).to.equal(amount.add(secondAmount));
     });
   });
+
+  it('TokenCollection Transfer And withdrawWithSignature Test', async function () {
+    const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+    const role = ethers.utils.id('WITHDRAW');
+    contract.grantRole(role, addr3.address);
+
+    const amount = ethers.utils.parseEther('1');
+
+    const tx = await addr1.sendTransaction({
+      to: contract.address,
+      value: amount,
+    });
+    await tx.wait();
+
+    await ethers.provider.getBalance(contract.address).then((balance) => {
+      expect(balance).to.equal(amount);
+    });
+
+    await expect(contract.withdraw(addr1.address, amount)).to.revertedWith(
+      'AccessControl: account 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 is missing role 0x7a8dc26796a1e50e6e190b70259f58f6a4edd5b22280ceecc82b687b8e982869'
+    );
+
+    let nonce: BigNumber = await contract.connect(addr1).getNonce();
+    expect(nonce.toString()).to.equal('0');
+    let hash = getMessageHash(addr1.address, amount, nonce);
+    let signature = await addr3.signMessage(hash);
+    let recovery = await contract.recoverSigner(hash, signature);
+    expect(recovery).to.equal(addr3.address);
+
+    await expect(
+      contract.connect(addr1).withdrawWithSignature(amount, signature)
+    )
+      .emit(contract, 'Withdraw')
+      .withArgs(addr1.address, amount);
+
+    const balanceNone = ethers.utils.parseEther('0');
+    await ethers.provider.getBalance(contract.address).then((balance) => {
+      expect(balance).to.equal(balanceNone);
+    });
+
+    nonce = await contract.connect(addr1).getNonce();
+    expect(nonce.toString()).to.equal('1');
+    hash = getMessageHash(addr1.address, amount, nonce);
+    signature = await addr3.signMessage(hash);
+    recovery = await contract.recoverSigner(hash, signature);
+    expect(recovery).to.equal(addr3.address);
+
+    await expect(
+      contract.connect(addr1).withdrawWithSignature(amount, signature)
+    ).to.revertedWith('Address: insufficient balance');
+  });
 });

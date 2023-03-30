@@ -81,10 +81,43 @@ contract TokenCollection is
         _unpause();
     }
 
+    function _checkWithdrawRoleWithSignature(
+        address to,
+        uint256 amount,
+        bytes memory signature,
+        bytes32 role
+    ) internal {
+        uint256 nonce = nonces[to];
+        nonces[to] = nonce + 1;
+        address signer = recoverSigner(
+            keccak256(abi.encodePacked(to, amount, nonce)),
+            signature
+        );
+        _checkRole(role, signer);
+    }
+
     function withdraw(
         address payable to,
         uint256 amount
     ) public whenNotPaused nonReentrant onlyRole(WITHDRAW) {
+        _withdraw(to, amount);
+    }
+
+    function withdrawWithSignature(
+        uint256 amount,
+        bytes memory signature
+    ) public whenNotPaused nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(_to, amount, signature, WITHDRAW);
+
+        _withdraw(payable(_to), amount);
+    }
+
+    function _withdraw(
+        address payable to,
+        uint256 amount
+    ) internal whenNotPaused {
         AddressUpgradeable.sendValue(to, amount);
         emit Withdraw(to, amount);
     }
@@ -116,14 +149,7 @@ contract TokenCollection is
     ) public nonReentrant {
         address _to = _msgSender();
 
-        uint256 nonce = nonces[_to];
-        nonces[_to] = nonce + 1;
-
-        address signer = recoverSigner(
-            keccak256(abi.encodePacked(_to, value, nonce)),
-            signature
-        );
-        _checkRole(WITHDRAW_ERC20, signer);
+        _checkWithdrawRoleWithSignature(_to, value, signature, WITHDRAW_ERC20);
 
         _withdrawERC20WithMint(token, _to, value);
     }
