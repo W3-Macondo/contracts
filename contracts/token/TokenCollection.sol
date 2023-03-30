@@ -85,31 +85,6 @@ contract TokenCollection is
         address payable to,
         uint256 amount
     ) public whenNotPaused nonReentrant onlyRole(WITHDRAW) {
-        _withdraw(to, amount);
-    }
-
-    function withdrawMintWithSignature(
-        uint256 amount,
-        bytes memory signature
-    ) public whenNotPaused nonReentrant {
-        address _to = _msgSender();
-
-        uint256 nonce = nonces[_to];
-        nonces[_to] = nonce + 1;
-
-        address signer = recoverSigner(
-            keccak256(abi.encodePacked(_to, amount, nonce)),
-            signature
-        );
-        _checkRole(WITHDRAW, signer);
-
-        _withdraw(_to, amount);
-    }
-
-    function _withdraw(
-        address payable to,
-        uint256 amount
-    ) internal whenNotPaused {
         AddressUpgradeable.sendValue(to, amount);
         emit Withdraw(to, amount);
     }
