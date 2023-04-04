@@ -10,4 +10,7 @@ artifacts
 #export files
 abi
 ethereum-abi-types
-.openzeppelin
+# OpenZeppelin
+.openzeppelin/unknown-*.json
+
+.DS_Store
