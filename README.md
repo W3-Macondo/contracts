@@ -125,6 +125,11 @@ contracts/
 │       └── OtherXXX.sol/
 │           ├── OtherXXX.json
 │           └── OtherXXX.ts
+│   └── contracts_sui/
+│       └── core/
+│           └── OtherXXX.sol
+│       └── token/
+│           └── SuiBFBToken.sol
 └── ...
 ````
 
