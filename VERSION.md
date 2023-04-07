@@ -19,3 +19,8 @@
 
 1. Initialize version
 2. Improve the main logic of MCD release contracts
+
+#### 0.1.0.20230404.1
+
+1. change TokenCollection withdraw method using signature
+2. add script command

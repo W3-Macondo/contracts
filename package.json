@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
-    "compile": "rm -rf ./abi && npx hardhat export-abi && cp -R third_party_abi ./abi/contracts && find ./abi/contracts -name '*.json'|xargs -I file npx abi-types-generator file --provider=ethers_v5"
+    "compile": "rm -rf ./abi && npx hardhat export-abi && cp -R third_party_abi ./abi/contracts && find ./abi/contracts -name '*.json'|xargs -I file npx abi-types-generator file --provider=ethers_v5",
+    "deploy_bsc": "npx hardhat run --network bsc_testnet"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
     "typescript": "^4.7.2"
   },
   "dependencies": {
+    "@arbitrum/sdk": "^3.1.2",
     "@chainlink/contracts": "^0.4.1",
     "@openzeppelin/contracts": "^4.8.0",
     "@openzeppelin/contracts-upgradeable": "^4.8.0",

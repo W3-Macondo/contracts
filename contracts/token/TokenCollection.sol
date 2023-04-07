@@ -10,6 +10,8 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/utils/ERC721HolderUpgra
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
+
 import "../core/interface/erc/ERC5679/IERC5679Ext20.sol";
 import "../core/interface/IERCMINTExt20.sol";
 
@@ -43,6 +45,9 @@ contract TokenCollection is
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
+    //nonces for address
+    mapping(address => uint256) public nonces;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -60,11 +65,9 @@ contract TokenCollection is
         _grantRole(UPGRADER_ROLE, msg.sender);
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyRole(UPGRADER_ROLE)
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
     receive() external payable virtual {
         emit TokenReceived(_msgSender(), msg.value);
@@ -78,12 +81,43 @@ contract TokenCollection is
         _unpause();
     }
 
-    function withdraw(address payable to, uint256 amount)
-        public
-        whenNotPaused
-        nonReentrant
-        onlyRole(WITHDRAW)
-    {
+    function _checkWithdrawRoleWithSignature(
+        address to,
+        uint256 amount,
+        bytes memory signature,
+        bytes32 role
+    ) internal {
+        uint256 nonce = nonces[to];
+        nonces[to] = nonce + 1;
+        address signer = recoverSigner(
+            keccak256(abi.encodePacked(to, amount, nonce)),
+            signature
+        );
+        _checkRole(role, signer);
+    }
+
+    function withdraw(
+        address payable to,
+        uint256 amount
+    ) external nonReentrant onlyRole(WITHDRAW) {
+        _withdraw(to, amount);
+    }
+
+    function withdrawWithSignature(
+        uint256 amount,
+        bytes memory signature
+    ) external nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(_to, amount, signature, WITHDRAW);
+
+        _withdraw(payable(_to), amount);
+    }
+
+    function _withdraw(
+        address payable to,
+        uint256 amount
+    ) internal whenNotPaused {
         AddressUpgradeable.sendValue(to, amount);
         emit Withdraw(to, amount);
     }
@@ -92,15 +126,59 @@ contract TokenCollection is
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
+    ) external nonReentrant onlyRole(WITHDRAW_ERC20) {
         _withdrawERC20(token, to, value);
+    }
+
+    function withdrawERC20WithSignature(
+        IERC20Upgradeable token,
+        uint256 value,
+        bytes memory signature
+    ) public nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(_to, value, signature, WITHDRAW_ERC20);
+
+        _withdrawERC20(token, _to, value);
+    }
+
+    function getNonce() public view returns (uint256) {
+        return nonces[_msgSender()];
+    }
+
+    function recoverSigner(
+        bytes32 hash,
+        bytes memory signature
+    ) public pure returns (address) {
+        bytes32 ethSign = ECDSAUpgradeable.toEthSignedMessageHash(hash);
+        return ECDSAUpgradeable.recover(ethSign, signature);
+    }
+
+    function withdrawERC20WithMintWithSignature(
+        IERC20Upgradeable token,
+        uint256 value,
+        bytes memory signature
+    ) external nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(_to, value, signature, WITHDRAW_ERC20);
+
+        _withdrawERC20WithMint(token, _to, value);
     }
 
     function withdrawERC20WithMint(
         IERC20Upgradeable token,
         address to,
         uint256 value
-    ) public nonReentrant onlyRole(WITHDRAW_ERC20) {
+    ) external nonReentrant onlyRole(WITHDRAW_ERC20) {
+        _withdrawERC20WithMint(token, to, value);
+    }
+
+    function _withdrawERC20WithMint(
+        IERC20Upgradeable token,
+        address to,
+        uint256 value
+    ) internal whenNotPaused {
         //check token balance
         uint256 balance = token.balanceOf(address(this));
         if (balance < value) {
@@ -121,12 +199,37 @@ contract TokenCollection is
         emit ERC20Withdraw(token, to, value);
     }
 
+    function _withdrawERC721(
+        IERC721Upgradeable token,
+        address to,
+        uint256 tokenId
+    ) internal whenNotPaused {
+        token.safeTransferFrom(address(this), to, tokenId);
+        emit ERC721Withdraw(token, to, tokenId);
+    }
+
     function withdrawERC721(
         IERC721Upgradeable token,
         address to,
         uint256 tokenId
-    ) public whenNotPaused nonReentrant onlyRole(WITHDRAW_ERC721) {
-        token.safeTransferFrom(address(this), to, tokenId);
-        emit ERC721Withdraw(token, to, tokenId);
+    ) external nonReentrant onlyRole(WITHDRAW_ERC721) {
+        _withdrawERC721(token, to, tokenId);
+    }
+
+    function withdrawERC721WithSignature(
+        IERC721Upgradeable token,
+        uint256 tokenId,
+        bytes memory signature
+    ) external nonReentrant {
+        address _to = _msgSender();
+
+        _checkWithdrawRoleWithSignature(
+            _to,
+            tokenId,
+            signature,
+            WITHDRAW_ERC721
+        );
+
+        _withdrawERC721(token, _to, tokenId);
     }
 }
