@@ -2,8 +2,6 @@
 // An example of a consumer contract that relies on a subscription for funding.
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -77,18 +75,16 @@ contract RandomOracleConsumer is VRFConsumerBaseV2, ReentrancyGuard, Ownable {
         emit RequestComplete(requestId);
     }
 
-    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords)
-        internal
-        override
-    {
+    function fulfillRandomWords(
+        uint256 requestId,
+        uint256[] memory randomWords
+    ) internal override {
         s_requestIdToRandomWords[requestId] = randomWords;
     }
 
-    function getRandomWords(uint256 requestId)
-        public
-        view
-        returns (uint256[] memory)
-    {
+    function getRandomWords(
+        uint256 requestId
+    ) public view returns (uint256[] memory) {
         return s_requestIdToRandomWords[requestId];
     }
 }

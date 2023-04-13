@@ -2,6 +2,7 @@ import '@nomiclabs/hardhat-waffle';
 import 'dotenv/config';
 import { task } from 'hardhat/config';
 
+import '@nomiclabs/hardhat-solhint';
 import '@openzeppelin/hardhat-defender';
 import '@openzeppelin/hardhat-upgrades';
 import 'hardhat-abi-exporter';

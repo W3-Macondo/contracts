@@ -33,7 +33,7 @@ contract MacondoUSDT is
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
-        _mint(msg.sender, 1000000000 * 10**decimals());
+        _mint(msg.sender, 1000000000 * 10 ** decimals());
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -56,9 +56,7 @@ contract MacondoUSDT is
         super._beforeTokenTransfer(from, to, amount);
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyRole(UPGRADER_ROLE)
-    {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 }
